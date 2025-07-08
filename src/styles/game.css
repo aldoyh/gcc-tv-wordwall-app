@@ -1,0 +1,59 @@
+#game-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.term-container, .definition-container {
+  width: 45%;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.term, .definition {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #eee;
+  background-color: #f9f9f9;
+  cursor: grab;
+}
+
+.drop-target {
+  border: 2px dashed #ccc;
+  padding: 10px;
+  margin: 5px;
+  background-color: #fff;
+}
+
+.drop-target.correct {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.drop-target.incorrect {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.term.matched {
+  cursor: default;
+  opacity: 0.5;
+}
+
+#controls {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#reset-btn, #check-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#game-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-size: 18px;
+}

@@ -1,71 +1,140 @@
 ---
-import { getEntry } from "astro:content";
-import Alert from "../components/Alert.astro";
-import Guide from "../components/Guide.astro";
 import Layout from "../components/Layout.astro";
-import TableRow from "../components/TableRow.astro";
-import { supabase } from "../utils/database";
-
-export const prerender = false;
-
-let frameworks;
-let frameworksError;
-
-// Fetch frameworks data from Supabase if connection is set up
-if (supabase) {
-  const { data, error } = await supabase
-    .from("frameworks")
-    .select("*")
-    .order("likes", { ascending: false });
-  frameworks = data;
-  frameworksError = error;
-}
-
-// Get guides
-const connectGuide = await getEntry("guides", "guide-connect-supabase");
-const fetchDataGuide = await getEntry("guides", "guide-fetch-data");
 ---
 
-<Layout title="Web Frameworks">
-  {
-    supabase ? (
-      frameworks ? (
-        <>
-          <h1 class="mb-8 text-4xl font-bold">
-            Vote for Your Favorite Web Framework
-          </h1>
-          <table class="w-full text-left">
-            <thead>
-              <tr class="font-mono text-base border-t border-b">
-                <th>Name</th>
-                <th>Logo</th>
-                <th>Likes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {frameworks?.map((framework) => (
-                <TableRow framework={framework} />
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <>
-          {frameworksError && (
-            <Alert
-              title={frameworksError.code}
-              text={frameworksError.message}
-              variant="error"
-            />
-          )}
-          {fetchDataGuide && <Guide guide={fetchDataGuide} />}
-        </>
-      )
-    ) : (
-      <>
-        <Alert title="Finish setting up your new site" text="Before your website is ready, you must complete the steps from the guide below to create, populate, and connect your Supabase database."/>
-        {connectGuide && <Guide guide={connectGuide} />}
-      </>
-    )
-  }
+<Layout title="Wordwall Match Up">
+  <div id="game-info">
+    <div id="timer">Time: 0s</div>
+    <div id="score">Score: 0</div>
+  </div>
+  <div id="game-container"></div>
+  <div id="controls">
+    <button id="reset-btn">Reset</button>
+    <button id="check-btn">Check Answers</button>
+  </div>
+  <div id="leaderboard-form" style="display: none;">
+    <h2>Add to Leaderboard</h2>
+    <form>
+      <input type="text" id="name-input" placeholder="Enter your name" />
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 </Layout>
+
+<script>
+  import "../styles/game.css";
+
+  // Game logic will go here
+  const terms = [
+    { id: 'term1', text: 'Astro' },
+    { id: 'term2', text: 'React' },
+    { id: 'term3', text: 'Vue' },
+  ];
+
+  const definitions = [
+    { id: 'def1', text: 'A web framework for content-driven websites.' },
+    { id: 'def2', text: 'A JavaScript library for building user interfaces.' },
+    { id: 'def3', text: 'The Progressive JavaScript Framework.' },
+  ];
+
+  let score = 0;
+  let time = 0;
+  let timerInterval;
+
+  const timerEl = document.getElementById('timer');
+  const scoreEl = document.getElementById('score');
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      time++;
+      timerEl.textContent = `Time: ${time}s`;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+  }
+
+  function updateScore(points) {
+    score += points;
+    scoreEl.textContent = `Score: ${score}`;
+  }
+
+  startTimer();
+
+  const termContainer = document.createElement('div');
+  termContainer.className = 'term-container';
+  gameContainer.appendChild(termContainer);
+
+  const definitionContainer = document.createElement('div');
+  definitionContainer.className = 'definition-container';
+  gameContainer.appendChild(definitionContainer);
+
+  terms.forEach(term => {
+    const termEl = document.createElement('div');
+    termEl.id = term.id;
+    termEl.className = 'term';
+    termEl.textContent = term.text;
+    termEl.draggable = true;
+    termEl.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', term.id);
+    });
+    termContainer.appendChild(termEl);
+  });
+
+  definitions.forEach(def => {
+    const defEl = document.createElement('div');
+    defEl.id = def.id;
+    defEl.className = 'definition drop-target';
+    defEl.textContent = def.text;
+    defEl.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    defEl.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const termId = e.dataTransfer.getData('text/plain');
+      const termEl = document.getElementById(termId);
+      if (termEl) {
+        if (termId.replace('term', '') === def.id.replace('def', '')) {
+          defEl.appendChild(termEl);
+          defEl.classList.add('correct');
+          termEl.classList.add('matched');
+          updateScore(10);
+          if (document.querySelectorAll('.matched').length === terms.length) {
+            stopTimer();
+            document.getElementById('leaderboard-form').style.display = 'block';
+          }
+        } else {
+          defEl.classList.add('incorrect');
+          setTimeout(() => {
+            defEl.classList.remove('incorrect');
+          }, 500);
+        }
+      }
+    });
+    definitionContainer.appendChild(defEl);
+  });
+
+  const resetBtn = document.getElementById('reset-btn');
+  resetBtn.addEventListener('click', () => {
+    location.reload();
+  });
+
+  const leaderboardForm = document.getElementById('leaderboard-form');
+  leaderboardForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById('name-input');
+    const name = nameInput.value;
+    if (name) {
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .insert([{ name, score }]);
+      if (error) {
+        console.error(error);
+        alert('Error submitting score');
+      } else {
+        window.location.href = '/leaderboard';
+      }
+    }
+  });
+</script>

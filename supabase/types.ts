@@ -39,6 +39,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      leaderboard: {
+        Row: {
+          id: string;
+          name: string;
+          score: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          score: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          score?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
