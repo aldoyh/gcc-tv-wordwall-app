@@ -35,15 +35,101 @@ All commands are run from the root of the project, from a terminal:
 | [Netlify CLI](https://docs.netlify.com/cli/get-started/).                    |
 | [Supabase account](https://supabase.com/)                                    |
 
-### Set up the database
+### Set up the PHP backend (SQLite)
 
-To use this template, you’ll need to set up and seed a new Supabase database.
+This project now uses a PHP backend for all transactional and leaderboard operations, using SQLite for storage. The PHP API is located in `php-backend/api.php`.
 
-1. Create a new Supabase project.
-2. Run the SQL commands found in the `supabase/migrations` directory in the Supabase UI.
-3. To seed the database with data, you can import the contents of the `supabase/seed.csv` file in the Supabase UI.
+#### How to use the PHP backend
 
-ℹ️ _Note: This template was created to be used with the Supabase extension for Netlify. If you don’t wish to use the Netlify Supabase extension, you will need to set the `SUPABASE_DATABASE_URL` and `SUPABASE_ANON_KEY` environment variables in the `.env` file._
+1. Make sure you have PHP 7.4+ installed with SQLite3 support.
+2. Start the PHP built-in server in the `php-backend` directory:
+
+   ```sh
+   cd php-backend
+   php -S localhost:9000
+   ```
+
+3. The API will be available at `http://localhost:9000/api.php`.
+
+#### API Endpoints
+
+All endpoints are accessed via `GET` or `POST` with an `action` parameter. All data is sent/received as JSON.
+
+### POST /api.php?action=add_answer
+
+Add a player's answer to a question.
+
+Request body:
+
+```json
+{
+  "question_id": 1,
+  "player_name": "Alice",
+  "answer": 2,
+  "response_time": 3.42
+}
+```
+
+Response:
+
+```json
+{ "status": "ok" }
+```
+
+## **GET /api.php?action=get_answers&question_id=1**
+
+Get all answers for a question.
+
+Response:
+
+```json
+[
+  { "id": 1, "question_id": 1, "player_name": "Alice", "answer": 2, "response_time": 3.42, "created_at": "..." },
+  ...
+]
+```
+
+## **POST /api.php?action=add_leaderboard**
+
+Add a player to the leaderboard.
+
+Request body:
+
+```json
+{
+  "player_name": "Alice",
+  "score": 100
+}
+```
+
+Response:
+
+```json
+{ "status": "ok" }
+```
+
+**GET /api.php?action=get_leaderboard**
+
+Get the top 10 players on the leaderboard.
+
+Response:
+
+```json
+[
+  { "id": 1, "player_name": "Alice", "score": 100, "created_at": "..." },
+  ...
+]
+```
+
+---
+
+**Table structure:**
+
+- `questions`: id, text, options (JSON), correct_option
+- `answers`: id, question_id, player_name, answer, response_time, created_at
+- `leaderboard`: id, player_name, score, created_at
+
+---
 
 ### Install and run locally
 
@@ -51,19 +137,19 @@ To use this template, you’ll need to set up and seed a new Supabase database.
 
 2. For the starter to have full functionality locally, please ensure you have an up-to-date version of Netlify CLI. Run:
 
-```
+```sh
 npm install netlify-cli@latest -g
 ```
 
 3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
 
-```
+```sh
 netlify link
 ```
 
 4. Then, run the Astro.js development server via Netlify CLI:
 
-```
+```sh
 netlify dev --target-port 4321
 ```
 

@@ -24,117 +24,121 @@ import Layout from "../components/Layout.astro";
 <script>
   import "../styles/game.css";
 
-  // Game logic will go here
-  const terms = [
-    { id: 'term1', text: 'Astro' },
-    { id: 'term2', text: 'React' },
-    { id: 'term3', text: 'Vue' },
-  ];
+    let score = 0;
+    let time = 0;
+    let timerInterval;
 
-  const definitions = [
-    { id: 'def1', text: 'A web framework for content-driven websites.' },
-    { id: 'def2', text: 'A JavaScript library for building user interfaces.' },
-    { id: 'def3', text: 'The Progressive JavaScript Framework.' },
-  ];
+    const timerEl = document.getElementById('timer');
+    const scoreEl = document.getElementById('score');
+    const gameContainer = document.getElementById('game-container');
+    const leaderboardForm = document.getElementById('leaderboard-form');
 
-  let score = 0;
-  let time = 0;
-  let timerInterval;
+    async function getQuestions() {
+      const response = await fetch('/php-backend/api.php?action=get_questions');
+      const questions = await response.json();
+      return questions;
+    }
 
-  const timerEl = document.getElementById('timer');
-  const scoreEl = document.getElementById('score');
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        time++;
+        timerEl.textContent = `Time: ${time}s`;
+      }, 1000);
+    }
 
-  function startTimer() {
-    timerInterval = setInterval(() => {
-      time++;
-      timerEl.textContent = `Time: ${time}s`;
-    }, 1000);
-  }
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
 
-  function stopTimer() {
-    clearInterval(timerInterval);
-  }
+    function updateScore(points) {
+      score += points;
+      scoreEl.textContent = `Score: ${score}`;
+    }
 
-  function updateScore(points) {
-    score += points;
-    scoreEl.textContent = `Score: ${score}`;
-  }
+    async function initGame() {
+      const questions = await getQuestions();
+      if (questions.length === 0) {
+        gameContainer.innerHTML = '<p>No questions found. Please add some questions first.</p>';
+        return;
+      }
+      startTimer();
 
-  startTimer();
+      const termContainer = document.createElement('div');
+      termContainer.className = 'term-container';
+      gameContainer.appendChild(termContainer);
 
-  const termContainer = document.createElement('div');
-  termContainer.className = 'term-container';
-  gameContainer.appendChild(termContainer);
+      const definitionContainer = document.createElement('div');
+      definitionContainer.className = 'definition-container';
+      gameContainer.appendChild(definitionContainer);
 
-  const definitionContainer = document.createElement('div');
-  definitionContainer.className = 'definition-container';
-  gameContainer.appendChild(definitionContainer);
+      questions.forEach((question, index) => {
+        const termEl = document.createElement('div');
+        termEl.id = `term${index}`;
+        termEl.className = 'term';
+        termEl.textContent = question.text;
+        termEl.draggable = true;
+        termEl.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', termEl.id);
+        });
+        termContainer.appendChild(termEl);
 
-  terms.forEach(term => {
-    const termEl = document.createElement('div');
-    termEl.id = term.id;
-    termEl.className = 'term';
-    termEl.textContent = term.text;
-    termEl.draggable = true;
-    termEl.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', term.id);
-    });
-    termContainer.appendChild(termEl);
-  });
-
-  definitions.forEach(def => {
-    const defEl = document.createElement('div');
-    defEl.id = def.id;
-    defEl.className = 'definition drop-target';
-    defEl.textContent = def.text;
-    defEl.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-    defEl.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const termId = e.dataTransfer.getData('text/plain');
-      const termEl = document.getElementById(termId);
-      if (termEl) {
-        if (termId.replace('term', '') === def.id.replace('def', '')) {
-          defEl.appendChild(termEl);
-          defEl.classList.add('correct');
-          termEl.classList.add('matched');
-          updateScore(10);
-          if (document.querySelectorAll('.matched').length === terms.length) {
-            stopTimer();
-            document.getElementById('leaderboard-form').style.display = 'block';
+        const defEl = document.createElement('div');
+        defEl.id = `def${index}`;
+        defEl.className = 'definition drop-target';
+        defEl.textContent = question.options[question.correct_option];
+        defEl.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+        defEl.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const termId = e.dataTransfer.getData('text/plain');
+          const termEl = document.getElementById(termId);
+          if (termEl) {
+            if (termId.replace('term', '') === defEl.id.replace('def', '')) {
+              defEl.appendChild(termEl);
+              defEl.classList.add('correct');
+              termEl.classList.add('matched');
+              updateScore(10);
+              if (document.querySelectorAll('.matched').length === questions.length) {
+                stopTimer();
+                leaderboardForm.style.display = 'block';
+              }
+            } else {
+              defEl.classList.add('incorrect');
+              setTimeout(() => {
+                defEl.classList.remove('incorrect');
+              }, 500);
+            }
           }
+        });
+        definitionContainer.appendChild(defEl);
+      });
+    }
+
+    initGame();
+
+    const resetBtn = document.getElementById('reset-btn');
+    resetBtn.addEventListener('click', () => {
+      location.reload();
+    });
+
+    leaderboardForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('name-input');
+      const name = nameInput.value;
+      if (name) {
+        const response = await fetch('/php-backend/api.php?action=add_leaderboard', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ player_name: name, score }),
+        });
+        if (response.ok) {
+          window.location.href = '/leaderboard';
         } else {
-          defEl.classList.add('incorrect');
-          setTimeout(() => {
-            defEl.classList.remove('incorrect');
-          }, 500);
+          alert('Error submitting score');
         }
       }
     });
-    definitionContainer.appendChild(defEl);
-  });
-
-  const resetBtn = document.getElementById('reset-btn');
-  resetBtn.addEventListener('click', () => {
-    location.reload();
-  });
-
-  const leaderboardForm = document.getElementById('leaderboard-form');
-  leaderboardForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nameInput = document.getElementById('name-input');
-    const name = nameInput.value;
-    if (name) {
-      const { data, error } = await supabase
-        .from('leaderboard')
-        .insert([{ name, score }]);
-      if (error) {
-        console.error(error);
-        alert('Error submitting score');
-      } else {
-        window.location.href = '/leaderboard';
-      }
-    }
-  });
 </script>

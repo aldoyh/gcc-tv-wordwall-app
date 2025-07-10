@@ -1,21 +1,8 @@
 ---
 import Layout from '../components/Layout.astro';
-import { supabase } from '../utils/database';
 
-let leaderboard = [];
-if (supabase) {
-  const { data, error } = await supabase
-    .from('leaderboard')
-    .select('*')
-    .order('score', { ascending: false })
-    .limit(10);
-  if (data) {
-    leaderboard = data;
-  }
-  if (error) {
-    console.error(error);
-  }
-}
+const response = await fetch('http://localhost:8888/php-backend/api.php?action=get_leaderboard');
+const leaderboard = await response.json();
 ---
 
 <Layout title="Leaderboard">
