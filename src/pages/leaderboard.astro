@@ -1,43 +1,75 @@
 ---
 import Layout from '../components/Layout.astro';
-
-const response = await fetch('http://localhost:8888/php-backend/api.php?action=get_leaderboard');
-const leaderboard = await response.json();
+import { t } from '../utils/i18n';
 ---
 
-<Layout title="Leaderboard">
-  <h1>Leaderboard</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Name</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      {leaderboard.map((entry, index) => (
-        <tr>
-          <td>{index + 1}</td>
-          <td>{entry.name}</td>
-          <td>{entry.score}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+<Layout title={t('leaderboard')}>
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">{t('leaderboard')}</h1>
+    <div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+        <table class="w-full table-auto">
+            <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">{t('rank')}</th>
+                <th class="py-3 px-6 text-left">{t('name')}</th>
+                <th class="py-3 px-6 text-right">{t('score_col')}</th>
+            </tr>
+            </thead>
+            <tbody class="text-gray-600 text-sm font-light" id="leaderboard-table-body">
+            <tr><td colspan="3" class="text-center py-4">{t('loading_leaderboard')}</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-6">
+        <a href="/" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {t('back_to_home')}
+        </a>
+    </div>
+  </div>
 </Layout>
 
-<style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
+<script>
+  import { showNotification } from '../utils/notifications';
+  import { t } from '../utils/i18n';
+
+  interface LeaderboardEntry {
+    player_name: string;
+    score: number;
   }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
+
+  async function loadLeaderboard() {
+    const leaderboardTableBody = document.getElementById('leaderboard-table-body');
+    if (!leaderboardTableBody) return;
+
+    try {
+      const response = await fetch('/php-backend/api.php?action=get_leaderboard');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const leaderboard: LeaderboardEntry[] = await response.json();
+
+      leaderboardTableBody.innerHTML = ''; // Clear existing content
+
+      if (leaderboard.length === 0) {
+        leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4">${t('no_entries_yet')}</td></tr>`;
+      } else {
+        leaderboard.forEach((entry: LeaderboardEntry, index: number) => {
+          const row = document.createElement('tr');
+          row.className = 'border-b border-gray-200 hover:bg-gray-100';
+          row.innerHTML = `
+            <td class="py-3 px-6 text-left whitespace-nowrap font-bold">${index + 1}</td>
+            <td class="py-3 px-6 text-left">${entry.player_name}</td>
+            <td class="py-3 px-6 text-right font-semibold">${entry.score}</td>
+          `;
+          leaderboardTableBody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+      if (leaderboardTableBody) leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">${t('failed_to_load_leaderboard')}</td></tr>`;
+      showNotification({ message: t('failed_to_load_leaderboard'), type: 'error' });
+    }
   }
-  th {
-    background-color: #f2f2f2;
-  }
-</style>
+
+  loadLeaderboard();
+</script>

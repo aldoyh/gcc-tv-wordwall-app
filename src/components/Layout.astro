@@ -1,5 +1,17 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title = 'WordYard' } = Astro.props;
+import Notification from './Notification.astro';
+import { t, getLanguage } from '../utils/i18n';
+
+const currentLang = getLanguage();
+---
+
 <!doctype html>
-<html lang="en">
+<html lang={currentLang} dir={currentLang === 'ar' ? 'rtl' : 'ltr'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,8 +19,23 @@
     <link rel="stylesheet" href="/src/styles/globals.css">
   </head>
   <body>
+    <nav class="flex justify-between items-center p-4 bg-gray-100 shadow-md">
+      <div class="flex gap-4">
+        <a href="/" class="text-blue-600 hover:text-blue-800 font-semibold">{t('app_title')}</a>
+        <a href="/leaderboard" class="text-blue-600 hover:text-blue-800 font-semibold">{t('leaderboard')}</a>
+        <a href="/create" class="text-blue-600 hover:text-blue-800 font-semibold">{t('create_new_game')}</a>
+      </div>
+      <div class="language-switcher">
+        <select id="language-select" class="p-2 rounded-md border border-gray-300">
+          <option value="en">English</option>
+          <option value="ar">العربية</option>
+        </select>
+      </div>
+    </nav>
     <main>
       <slot />
     </main>
+    <Notification />
+    <script type="module" src="../scripts/language-switcher.ts"></script>
   </body>
 </html>

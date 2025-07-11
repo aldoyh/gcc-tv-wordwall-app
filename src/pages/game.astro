@@ -1,0 +1,411 @@
+---
+import Layout from "../components/Layout.astro";
+import { t } from '../utils/i18n';
+
+const gameId = Astro.url.searchParams.get('id');
+
+if (!gameId) {
+  return Astro.redirect('/');
+}
+
+const response = await fetch(`/php-backend/api.php?action=get_game&id=${gameId}`);
+const game = await response.json();
+
+if (!game) {
+    return Astro.redirect('/');
+}
+---
+
+<Layout title={game.title}>
+  <div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <h1 id="game-title" class="text-3xl font-bold">{game.title}</h1>
+        <p id="game-description" class="text-gray-600">{game.description}</p>
+      </div>
+      <div class="flex space-x-2">
+        <a id="add-questions-link" href={`/add-questions?game_id=${gameId}`} class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{t('add_questions')}</a>
+        <a id="edit-questions-link" href={`/edit-questions?game_id=${gameId}`} class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">{t('edit_questions')}</a>
+        <button id="switch-template-btn" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">{t('switch_template')}</button>
+        <select id="theme-select" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+          <option value="default">{t('default_theme')}</option>
+          <option value="dark">{t('dark_theme')}</option>
+          <option value="colorful">{t('colorful_theme')}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
+        <div id="timer" class="text-xl font-semibold">{t('time')}: 0s</div>
+        <div id="score" class="text-xl font-semibold">{t('score')}: 0</div>
+    </div>
+
+    <div id="game-area" class="bg-white p-6 rounded-lg shadow-lg min-h-[300px]">
+      {game.template === 'match-up' && (
+        <div id="match-up-game">
+          <div id="game-container" class="flex flex-col md:flex-row justify-around">
+            <div id="term-container" class="term-container p-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div id="definition-container" class="definition-container p-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+          <div id="controls" class="mt-4 flex justify-center space-x-4">
+            <button id="reset-btn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('reset')}</button>
+            <button id="check-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{t('check_answers')}</button>
+          </div>
+        </div>
+      )}
+
+      {game.template === 'quiz' && (
+        <div id="quiz-game" class="flex flex-col items-center justify-center h-full">
+          <h2 id="quiz-question" class="text-2xl font-bold mb-6 text-center"></h2>
+          <div id="quiz-options" class="grid grid-cols-1 gap-4 w-full max-w-md"></div>
+          <button id="next-question-btn" class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="display:none;">{t('next_question')}</button>
+        </div>
+      )}
+    </div>
+
+    <div id="leaderboard-form" style="display: none;" class="mt-6 max-w-md mx-auto bg-gray-200 p-6 rounded-lg">
+        <h2 class="text-2xl font-bold mb-4 text-center">{t('add_to_leaderboard')}</h2>
+        <form>
+            <input type="text" id="name-input" placeholder={t('enter_your_name')} class="p-2 border rounded" />
+            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">{t('submit')}</button>
+        </form>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import "../styles/game.css";
+  import { showNotification } from '../utils/notifications';
+  import { t } from '../utils/i18n';
+
+    let score: number = 0;
+    let time: number = 0;
+    let timerInterval: number | undefined;
+    let currentQuestions: Question[] = [];
+    let currentQuestionIndex: number = 0;
+
+    const timerEl = document.getElementById('timer');
+    const scoreEl = document.getElementById('score');
+    const gameArea = document.getElementById('game-area');
+    const leaderboardForm = document.getElementById('leaderboard-form');
+    const gameTitleEl = document.getElementById('game-title');
+    const gameDescriptionEl = document.getElementById('game-description');
+    const addQuestionsLink = document.getElementById('add-questions-link') as HTMLAnchorElement;
+    const editQuestionsLink = document.getElementById('edit-questions-link') as HTMLAnchorElement;
+    const switchTemplateBtn = document.getElementById('switch-template-btn');
+    const themeSelect = document.getElementById('theme-select') as HTMLSelectElement;
+
+    // Match-up specific elements
+    const termContainer = document.getElementById('term-container');
+    const definitionContainer = document.getElementById('definition-container');
+    const resetBtn = document.getElementById('reset-btn');
+    const checkBtn = document.getElementById('check-btn');
+
+    // Quiz specific elements
+    const quizGameDiv = document.getElementById('quiz-game');
+    const quizQuestionEl = document.getElementById('quiz-question');
+    const quizOptionsEl = document.getElementById('quiz-options');
+    const nextQuestionBtn = document.getElementById('next-question-btn');
+
+    interface Question {
+      id: number;
+      text: string;
+      options: string[];
+      correct_option: number;
+    }
+
+    interface Game {
+      id: number;
+      title: string;
+      description: string;
+      template: string;
+    }
+
+    async function getGame(gameId: string): Promise<Game | null> {
+      try {
+        const response = await fetch(`/php-backend/api.php?action=get_game&id=${gameId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching game data:', error);
+        showNotification({ message: t('failed_to_load_game_data'), type: 'error' });
+        return null;
+      }
+    }
+
+    async function getQuestions(gameId: string): Promise<Question[]> {
+      try {
+        const response = await fetch(`/php-backend/api.php?action=get_questions&game_id=${gameId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+        showNotification({ message: t('failed_to_load_questions'), type: 'error' });
+        return [];
+      }
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        time++;
+        if (timerEl) timerEl.textContent = `${t('time')}: ${time}s`;
+      }, 1000) as unknown as number;
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function updateScore(points: number) {
+      score += points;
+      if (scoreEl) scoreEl.textContent = `${t('score')}: ${score}`;
+    }
+
+    async function initGame() {
+      const gameId = new URLSearchParams(window.location.search).get('id');
+      if (!gameId) {
+        window.location.href = '/'; // Redirect to home if no game ID
+        return;
+      }
+
+      // Show loading indicator
+      if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('loading_game')}</p>`;
+
+      const game = await getGame(gameId);
+      if (!game) {
+        window.location.href = '/'; // Redirect to home if game not found or error
+        return;
+      }
+
+      if (gameTitleEl) gameTitleEl.textContent = game.title;
+      if (gameDescriptionEl) gameDescriptionEl.textContent = game.description;
+      if (addQuestionsLink) addQuestionsLink.href = `/add-questions?game_id=${gameId}`;
+      if (editQuestionsLink) editQuestionsLink.href = `/edit-questions?game_id=${gameId}`;
+
+      currentQuestions = await getQuestions(gameId);
+      if (currentQuestions.length === 0) {
+        if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('no_questions_found')}</p>`;
+        return;
+      }
+      startTimer();
+
+      if (game.template === 'match-up') {
+        initMatchUpGame();
+      } else if (game.template === 'quiz') {
+        initQuizGame();
+      } else {
+        if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('unsupported_game_template')}</p>`;
+      }
+    }
+
+    function initMatchUpGame() {
+      if (!termContainer || !definitionContainer) return;
+
+      termContainer.innerHTML = '';
+      definitionContainer.innerHTML = '';
+
+      currentQuestions.forEach((question: Question, index: number) => {
+        const termEl = document.createElement('div');
+        termEl.id = `term${index}`;
+        termEl.className = 'term bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100 transition-colors';
+        termEl.textContent = question.text;
+        termEl.draggable = true;
+        termEl.addEventListener('dragstart', (e: DragEvent) => {
+          if (e.dataTransfer) e.dataTransfer.setData('text/plain', termEl.id);
+        });
+        termContainer.appendChild(termEl);
+
+        const defEl = document.createElement('div');
+        defEl.id = `def${index}`;
+        defEl.className = 'definition drop-target bg-gray-200 p-4 rounded-lg shadow min-h-[60px] flex items-center justify-center';
+        defEl.addEventListener('dragover', (e: DragEvent) => {
+          e.preventDefault();
+          defEl.classList.add('bg-green-200');
+        });
+        defEl.addEventListener('dragleave', (e: DragEvent) => {
+            e.preventDefault();
+            defEl.classList.remove('bg-green-200');
+        });
+        defEl.addEventListener('drop', (e: DragEvent) => {
+          e.preventDefault();
+          defEl.classList.remove('bg-green-200');
+          const termId = e.dataTransfer?.getData('text/plain');
+          const droppedTermEl = document.getElementById(termId || '');
+          if (droppedTermEl && !defEl.hasChildNodes()) { // Prevent dropping on an already matched definition
+            if (termId?.replace('term', '') === defEl.id.replace('def', '')) {
+              defEl.appendChild(droppedTermEl);
+              defEl.classList.add('!bg-green-500', 'text-white');
+              droppedTermEl.classList.add('opacity-50', 'cursor-not-allowed');
+              droppedTermEl.draggable = false;
+              updateScore(10);
+              if (document.querySelectorAll('.drop-target:has(> .term)').length === currentQuestions.length) {
+                stopTimer();
+                if (leaderboardForm) leaderboardForm.style.display = 'block';
+              }
+            } else {
+              defEl.classList.add('!bg-red-500');
+              setTimeout(() => {
+                defEl.classList.remove('!bg-red-500');
+              }, 500);
+            }
+          }
+        });
+        definitionContainer.appendChild(defEl);
+      });
+    }
+
+    function checkAnswers() {
+      stopTimer();
+      let correctMatches = 0;
+      currentQuestions.forEach((_, index) => { // Changed 'question' to '_' as it's not used
+        const defEl = document.getElementById(`def${index}`);
+        const termEl = document.getElementById(`term${index}`);
+
+        if (defEl && termEl) {
+          // Check if the term is inside the correct definition
+          if (defEl.contains(termEl) && termEl.id.replace('term', '') === defEl.id.replace('def', '')) {
+            defEl.classList.remove('!bg-red-500');
+            defEl.classList.add('!bg-green-500', 'text-white');
+            correctMatches++;
+          } else {
+            defEl.classList.remove('!bg-green-500', 'text-white');
+            defEl.classList.add('!bg-red-500');
+          }
+        }
+      });
+
+      if (correctMatches === currentQuestions.length) {
+        showNotification({ message: t('all_answers_correct'), type: 'success' });
+        if (leaderboardForm) leaderboardForm.style.display = 'block';
+      } else {
+        showNotification({ message: t('you_got_correct', correctMatches, currentQuestions.length), type: 'info' });
+      }
+    }
+
+    function initQuizGame() {
+      if (!quizQuestionEl || !quizOptionsEl || !nextQuestionBtn) return;
+
+      displayQuestion();
+
+      nextQuestionBtn.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < currentQuestions.length) {
+          displayQuestion();
+        }
+        else {
+          endQuiz();
+        }
+      });
+    }
+
+    function displayQuestion() {
+      if (!quizQuestionEl || !quizOptionsEl || !nextQuestionBtn) return;
+
+      const question = currentQuestions[currentQuestionIndex];
+      quizQuestionEl.textContent = question.text;
+      quizOptionsEl.innerHTML = '';
+      nextQuestionBtn.style.display = 'none';
+
+      question.options.forEach((option, index) => {
+        const optionBtn = document.createElement('button');
+        optionBtn.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded shadow-md';
+        optionBtn.textContent = option;
+        optionBtn.addEventListener('click', () => checkAnswer(index, question.correct_option, optionBtn));
+        quizOptionsEl.appendChild(optionBtn);
+      });
+    }
+
+    function checkAnswer(selectedIndex: number, correctIndex: number, button: HTMLButtonElement) {
+      if (!quizOptionsEl || !nextQuestionBtn) return;
+
+      // Disable all option buttons after an answer is selected
+      Array.from(quizOptionsEl.children).forEach(btn => {
+        (btn as HTMLButtonElement).disabled = true;
+      });
+
+      if (selectedIndex === correctIndex) {
+        updateScore(10);
+        button.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+        button.classList.add('bg-green-500', 'text-white');
+        showNotification({ message: t('correct'), type: 'success' });
+      } else {
+        button.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+        button.classList.add('bg-red-500', 'text-white');
+        showNotification({ message: t('incorrect'), type: 'error' });
+        // Highlight correct answer
+        Array.from(quizOptionsEl.children).forEach((btn, index) => {
+          if (index === correctIndex) {
+            btn.classList.add('border-2', 'border-green-700');
+          }
+        });
+      }
+      nextQuestionBtn.style.display = 'block';
+    }
+
+    function endQuiz() {
+      stopTimer();
+      if (quizGameDiv) {
+        quizGameDiv.innerHTML = `
+          <h2 class="text-3xl font-bold mb-4">${t('quiz_finished')}</h2>
+          <p class="text-xl mb-4">${t('your_final_score')} ${score}</p>
+          <button id="play-again-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">${t('play_again')}</button>
+        `;
+        document.getElementById('play-again-btn')?.addEventListener('click', () => location.reload());
+      }
+      if (leaderboardForm) leaderboardForm.style.display = 'block';
+    }
+
+    initGame();
+
+    resetBtn?.addEventListener('click', () => location.reload());
+
+    checkBtn?.addEventListener('click', checkAnswers);
+
+    document.getElementById('leaderboard-form form')?.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('name-input') as HTMLInputElement;
+      const name = nameInput?.value.trim();
+      if (name) {
+        const response = await fetch('/php-backend/api.php?action=add_leaderboard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ player_name: name, score }),
+        });
+        if (response.ok) {
+          window.location.href = '/leaderboard';
+        } else {
+          showNotification({ message: t('error_submitting_score'), type: 'error' });
+        }
+      }
+    });
+
+    switchTemplateBtn?.addEventListener('click', async () => {
+      const newTemplate = prompt(t('enter_new_template'));
+      if (newTemplate) {
+        const gameId = new URLSearchParams(window.location.search).get('id');
+        const response = await fetch('/php-backend/api.php?action=update_game_template', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ game_id: gameId, template: newTemplate }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          showNotification({ message: t('error_switching_template'), type: 'error' });
+        }
+      }
+    });
+
+    themeSelect?.addEventListener('change', (e) => {
+      const selectedTheme = (e.target as HTMLSelectElement).value;
+      document.body.className = ''; // Clear existing classes
+      if (selectedTheme !== 'default') {
+        document.body.classList.add(`${selectedTheme}-theme`);
+      }
+    });
+</script>
