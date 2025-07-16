@@ -17,25 +17,29 @@ const currentLang = getLanguage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <link rel="stylesheet" href="/src/styles/globals.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <nav class="flex justify-between items-center p-4 bg-gray-100 shadow-md">
+  <body class="min-h-screen bg-[var(--background)] font-sans antialiased">
+    <nav class="flex justify-between items-center p-4 bg-card text-card-foreground shadow-md border-b border-border">
       <div class="flex gap-4">
-        <a href="/" class="text-blue-600 hover:text-blue-800 font-semibold">{t('app_title')}</a>
-        <a href="/leaderboard" class="text-blue-600 hover:text-blue-800 font-semibold">{t('leaderboard')}</a>
-        <a href="/create" class="text-blue-600 hover:text-blue-800 font-semibold">{t('create_new_game')}</a>
+        <a href="/" class="text-foreground hover:text-primary font-semibold transition-colors duration-200">{t('app_title')}</a>
+        <a href="/leaderboard" class="text-foreground hover:text-primary font-semibold transition-colors duration-200">{t('leaderboard')}</a>
+        <a href="/create" class="text-foreground hover:text-primary font-semibold transition-colors duration-200">{t('create_new_game')}</a>
       </div>
       <div class="language-switcher">
-        <select id="language-select" class="p-2 rounded-md border border-gray-300">
+        <select id="language-select" class="p-2 rounded-md border border-input bg-background text-foreground focus:ring-2 focus:ring-ring focus:outline-none">
           <option value="en">English</option>
           <option value="ar">العربية</option>
         </select>
       </div>
     </nav>
-    <main>
+    <main class="flex-grow">
       <slot />
     </main>
     <Notification />
     <script type="module" src="../scripts/language-switcher.ts"></script>
+    <script is:inline src="/node_modules/qrcode-generator/qrcode.js"></script>
   </body>
 </html>

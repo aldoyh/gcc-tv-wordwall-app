@@ -3,16 +3,103 @@ import Layout from "../components/Layout.astro";
 import { t } from '../utils/i18n';
 ---
 
+
 <Layout title={t('app_title')}>
-  <div class="text-center">
-    <h1 class="text-4xl font-bold mb-8">{t('app_title')}</h1>
-    <div class="space-x-4">
-      <a href="/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        {t('create_new_game')}
+  {/* Hero Section */}
+  <section class="hero-bg text-[var(--primary-foreground)] py-20 rounded-b-lg">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-5xl font-extrabold mb-6 leading-tight">
+        {t('app_title')}
+      </h1>
+      <p class="text-xl mb-8 max-w-3xl mx-auto">
+        {t('hero_description')}
+      </p>
+      <a href="/create" class="btn-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl">
+        {t('create_a_new_game')}
       </a>
-      <a href="/leaderboard" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-        {t('view_leaderboard')}
+      <p class="mt-4 text-sm opacity-80">
+        {t('powered_by_supabase')}
+      </p>
+    </div>
+  </section>
+
+  {/* Features Section */}
+  <section id="features" class="py-16 bg-[var(--muted)]">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center text-[var(--foreground)] mb-12">
+        {t('features_title')}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="feature-card p-6 rounded-lg text-center">
+          <div class="feature-icon-accent text-5xl mb-4">🎮</div>
+          <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">{t('feature_game_management')}</h3>
+          <p class="text-[var(--muted-foreground)]">{t('feature_game_management_desc')}</p>
+        </div>
+        <div class="feature-card p-6 rounded-lg text-center">
+          <div class="feature-icon-accent text-5xl mb-4">🔄</div>
+          <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">{t('feature_templates')}</h3>
+          <p class="text-[var(--muted-foreground)]">{t('feature_templates_desc')}</p>
+        </div>
+        <div class="feature-card p-6 rounded-lg text-center">
+          <div class="feature-icon-accent text-5xl mb-4">📊</div>
+          <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">{t('feature_reports')}</h3>
+          <p class="text-[var(--muted-foreground)]">{t('feature_reports_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* How It Works Section */}
+  <section id="how-it-works" class="py-16 bg-[var(--background)]">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center text-[var(--foreground)] mb-12">
+        {t('how_it_works_title')}
+      </h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="lg:order-2">
+          <img src="/images/guides/web-frameworks.png" alt="Create Quiz" class="rounded-[var(--radius)] shadow-[var(--shadow)] w-full h-auto" />
+        </div>
+        <div class="lg:order-1 text-right">
+          <h3 class="text-3xl font-semibold text-[var(--foreground)] mb-4">{t('how_it_works_create')}</h3>
+          <p class="text-[var(--muted-foreground)]">{t('how_it_works_create_desc')}</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
+        <div class="lg:order-1">
+          <img src="/images/guides/supabase-netlify-sql-editor.png" alt="Track Progress" class="rounded-[var(--radius)] shadow-[var(--shadow)] w-full h-auto" />
+        </div>
+        <div class="lg:order-2 text-left">
+          <h3 class="text-3xl font-semibold text-[var(--foreground)] mb-4">{t('how_it_works_track')}</h3>
+          <p class="text-[var(--muted-foreground)]">{t('how_it_works_track_desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Call to Action Section */}
+  <section class="bg-[var(--primary)] text-[var(--primary-foreground)] py-16 rounded-t-lg">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-6">
+        {t('cta_title')}
+      </h2>
+      <p class="text-xl mb-8 max-w-2xl mx-auto">
+        {t('cta_description')}
+      </p>
+      <a href="/create" class="btn-primary btn-cta-alt bg-[var(--primary-foreground)] text-[var(--primary)] font-bold py-4 px-10 rounded-full text-xl shadow-lg hover:shadow-xl">
+        {t('cta_button')}
       </a>
     </div>
-  </div>
+  </section>
+
+  {/* Footer Section */}
+  <footer id="contact" class="bg-[var(--sidebar)] text-[var(--sidebar-foreground)] py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p>&copy; 2025 {t('footer_copyright')}</p>
+      <div class="mt-4 flex justify-center space-x-4 space-x-reverse">
+        <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">{t('footer_privacy')}</a>
+        <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">{t('footer_terms')}</a>
+        <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">{t('footer_support')}</a>
+      </div>
+    </div>
+  </footer>
 </Layout>

@@ -7,28 +7,30 @@ const gameId = Astro.url.searchParams.get('game_id');
 
 <Layout title={t('edit_questions')}>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">{t('edit_questions')}</h1>
-    <form id="edit-questions-form" class="bg-white p-8 rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold mb-6 text-foreground">{t('edit_questions')}</h1>
+    <form id="edit-questions-form" class="max-w-4xl mx-auto bg-card text-card-foreground p-8 rounded-lg shadow-md border border-border">
       <input type="hidden" name="game_id" value={gameId}>
-      <table class="w-full table-auto mb-6">
-        <thead>
-          <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-            <th class="py-3 px-6 text-left">{t('question')}</th>
-            <th class="py-3 px-6 text-left">{t('options')}</th>
-            <th class="py-3 px-6 text-center">{t('correct_option')}</th>
-            <th class="py-3 px-6 text-center">{t('action')}</th>
-          </tr>
-        </thead>
-        <tbody class="text-gray-600 text-sm font-light" id="questions-table-body">
-          <!-- Questions will be loaded here by JavaScript -->
-          <tr><td colspan="4" class="text-center py-4">{t('loading_questions')}</td></tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full table-auto border-collapse">
+          <thead>
+            <tr class="bg-muted text-muted-foreground uppercase text-sm leading-normal">
+              <th class="py-3 px-6 text-left rounded-tl-md">{t('question')}</th>
+              <th class="py-3 px-6 text-left">{t('options')}</th>
+              <th class="py-3 px-6 text-center">{t('correct_option')}</th>
+              <th class="py-3 px-6 text-center rounded-tr-md">{t('action')}</th>
+            </tr>
+          </thead>
+          <tbody class="text-foreground text-sm font-light" id="questions-table-body">
+            <!-- Questions will be loaded here by JavaScript -->
+            <tr><td colspan="4" class="text-center py-4 text-muted-foreground">{t('loading_questions')}</td></tr>
+          </tbody>
+        </table>
+      </div>
       <div class="flex items-center justify-between">
-        <button type="submit" id="save-changes-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button type="submit" id="save-changes-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           {t('save_changes')}
         </button>
-        <a href={`/game?id=${gameId}`} class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+        <a href={`/game?id=${gameId}`} class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
           {t('back_to_game')}
         </a>
       </div>
@@ -54,7 +56,7 @@ const gameId = Astro.url.searchParams.get('game_id');
 
   async function loadQuestions() {
     if (!gameId) {
-      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">${t('no_game_id_provided')}</td></tr>`;
+      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-destructive">${t('no_game_id_provided')}</td></tr>`;
       return;
     }
     try {
@@ -67,23 +69,23 @@ const gameId = Astro.url.searchParams.get('game_id');
       if (questionsTableBody) {
         questionsTableBody.innerHTML = ''; // Clear existing content
         if (questions.length === 0) {
-          questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4">${t('no_questions_for_game')}</td></tr>`;
+          questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted-foreground">${t('no_questions_for_game')}</td></tr>`;
         } else {
           questions.forEach((question: Question) => {
             const row = document.createElement('tr');
-            row.className = 'border-b border-gray-200 hover:bg-gray-100';
+            row.className = 'border-b border-border hover:bg-muted';
             row.innerHTML = `
               <td class="py-3 px-6 text-left whitespace-nowrap">
-                <input type="text" name="question_${question.id}" value="${question.text}" class="w-full bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+                <input type="text" name="question_${question.id}" value="${question.text}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
               </td>
               <td class="py-3 px-6 text-left">
-                <input type="text" name="options_${question.id}" value="${question.options.join(', ')}" class="w-full bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+                <input type="text" name="options_${question.id}" value="${question.options.join(', ')}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
               </td>
               <td class="py-3 px-6 text-center">
-                <input type="number" name="correct_option_${question.id}" value="${question.correct_option}" class="w-20 text-center bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+                <input type="number" name="correct_option_${question.id}" value="${question.correct_option}" class="flex h-10 w-20 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-center" />
               </td>
               <td class="py-3 px-6 text-center">
-                <button type="button" class="delete-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" data-question-id="${question.id}">${t('deleting')}</button>
+                <button type="button" class="delete-btn inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2" data-question-id="${question.id}">${t('delete')}</button>
               </td>
             `;
             questionsTableBody.appendChild(row);
@@ -92,7 +94,7 @@ const gameId = Astro.url.searchParams.get('game_id');
       }
     } catch (error) {
       console.error('Error loading questions:', error);
-      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">${t('failed_to_load_questions')}</td></tr>`;
+      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-destructive">${t('failed_to_load_questions')}</td></tr>`;
       showNotification({ message: t('failed_to_load_questions'), type: 'error' });
     }
   }

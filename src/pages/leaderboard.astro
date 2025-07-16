@@ -5,23 +5,23 @@ import { t } from '../utils/i18n';
 
 <Layout title={t('leaderboard')}>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6 text-center">{t('leaderboard')}</h1>
-    <div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-foreground text-center">{t('leaderboard')}</h1>
+    <div class="bg-card text-card-foreground p-8 rounded-lg shadow-md max-w-2xl mx-auto border border-border">
         <table class="w-full table-auto">
             <thead>
-            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-left">{t('rank')}</th>
+            <tr class="bg-muted text-muted-foreground uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left rounded-tl-md">{t('rank')}</th>
                 <th class="py-3 px-6 text-left">{t('name')}</th>
-                <th class="py-3 px-6 text-right">{t('score_col')}</th>
+                <th class="py-3 px-6 text-right rounded-tr-md">{t('score_col')}</th>
             </tr>
             </thead>
-            <tbody class="text-gray-600 text-sm font-light" id="leaderboard-table-body">
-            <tr><td colspan="3" class="text-center py-4">{t('loading_leaderboard')}</td></tr>
+            <tbody class="text-foreground text-sm font-light" id="leaderboard-table-body">
+            <tr><td colspan="3" class="text-center py-4 text-muted-foreground">{t('loading_leaderboard')}</td></tr>
             </tbody>
         </table>
     </div>
     <div class="text-center mt-6">
-        <a href="/" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <a href="/" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
             {t('back_to_home')}
         </a>
     </div>
@@ -51,11 +51,11 @@ import { t } from '../utils/i18n';
       leaderboardTableBody.innerHTML = ''; // Clear existing content
 
       if (leaderboard.length === 0) {
-        leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4">${t('no_entries_yet')}</td></tr>`;
+        leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-muted-foreground">${t('no_entries_yet')}</td></tr>`;
       } else {
         leaderboard.forEach((entry: LeaderboardEntry, index: number) => {
           const row = document.createElement('tr');
-          row.className = 'border-b border-gray-200 hover:bg-gray-100';
+          row.className = 'border-b border-border hover:bg-muted';
           row.innerHTML = `
             <td class="py-3 px-6 text-left whitespace-nowrap font-bold">${index + 1}</td>
             <td class="py-3 px-6 text-left">${entry.player_name}</td>
@@ -66,7 +66,7 @@ import { t } from '../utils/i18n';
       }
     } catch (error) {
       console.error('Error loading leaderboard:', error);
-      if (leaderboardTableBody) leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">${t('failed_to_load_leaderboard')}</td></tr>`;
+      if (leaderboardTableBody) leaderboardTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-destructive">${t('failed_to_load_leaderboard')}</td></tr>`;
       showNotification({ message: t('failed_to_load_leaderboard'), type: 'error' });
     }
   }

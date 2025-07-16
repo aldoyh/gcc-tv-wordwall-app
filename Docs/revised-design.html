@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق كاهوت البديل - صفحة الهبوط</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Cairo (for Arabic text) and Roboto (for sans-serif fallback) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define CSS Variables for Light Mode */
+        :root {
+            --background: oklch(1.0000 0 0); /* White */
+            --foreground: oklch(0.3588 0.1354 278.6973); /* Dark Blue/Purple */
+            --primary: oklch(0.6056 0.2189 292.7172); /* Main Indigo/Blue */
+            --primary-foreground: oklch(1.0000 0 0); /* White */
+            --muted: oklch(0.9691 0.0161 293.7558); /* Very Light Grayish Blue */
+            --muted-foreground: oklch(0.5413 0.2466 293.0090); /* Muted Blue/Purple */
+            --radius: 0.625rem;
+            --shadow: 2px 2px 4px 0px hsl(255 86% 66% / 0.20);
+        }
+
+        /* Define CSS Variables for Dark Mode */
+        html.dark {
+            --background: oklch(0.2077 0.0398 265.7549); /* Dark Background */
+            --foreground: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --primary: oklch(0.6056 0.2189 292.7172); /* Main Indigo/Blue */
+            --primary-foreground: oklch(1.0000 0 0); /* White */
+            --muted: oklch(0.2573 0.0861 281.2883); /* Dark Muted Background */
+            --muted-foreground: oklch(0.8112 0.1013 293.5712); /* Lighter Muted Foreground */
+        }
+
+        /* Base styles using CSS variables */
+        body {
+            font-family: 'Cairo', 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-foreground);
+            color: var(--primary);
+            box-shadow: 0 4px 6px hsl(255 86% 66% / 0.30);
+        }
+        .feature-card {
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px hsl(255 86% 66% / 0.30);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="bg-[var(--background)] shadow-md py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[var(--primary)]">تطبيقنا التعليمي</h1>
+            <nav>
+                <ul class="flex space-x-4 space-x-reverse">
+                    <li><a href="#features" class="hover:text-[var(--primary)]">المميزات</a></li>
+                    <li><a href="#how-it-works" class="hover:text-[var(--primary)]">كيف يعمل؟</a></li>
+                    <li><a href="#contact" class="hover:text-[var(--primary)]">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 bg-[var(--primary)] text-[var(--primary-foreground)]">
+        <h2 class="text-4xl font-bold mb-4">اجعل التعلم ممتعاً وتفاعلياً!</h2>
+        <p class="mb-6">تطبيقنا يقدم تجربة تعليمية فريدة ومثيرة.</p>
+        <button class="btn-primary px-6 py-3">ابدأ الآن</button>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-[var(--background)]">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">مميزات تجعل التعلم أفضل</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">اختبارات تفاعلية</h3>
+                    <p>أنشئ اختبارات جذابة مع أنواع أسئلة متعددة.</p>
+                </div>
+                <div class="feature-card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">ألعاب مباشرة</h3>
+                    <p>استضف ألعاباً مباشرة مع لوحات صدارة.</p>
+                </div>
+                <div class="feature-card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">تحليلات مفصلة</h3>
+                    <p>تتبع تقدم الطلاب وحدد نقاط القوة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="contact" class="py-8 bg-[var(--muted)] text-center">
+        <p>&copy; 2025 تطبيقنا التعليمي. جميع الحقوق محفوظة.</p>
+    </footer>
+</body>
+</html>

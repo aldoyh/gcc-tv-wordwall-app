@@ -1,30 +1,35 @@
-# build output
-dist/
-# generated types
-.astro/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-node_modules/
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# logs
+# Local environment variables
+# Keep .env.example in the repo, but ignore the actual .env file
+.env
+.env*.local
+
+# Production build
+/dist
+/build
+/.output
+/.svelte-kit
+/.next
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-
-# environment variables
-.env
-.env.production
-
-# macOS-specific files
-.DS_Store
-
-# jetbrains setting folder
+# IDEs and editors
+.vscode/
 .idea/
+*DS_Store
 
+# Test results
+/coverage
+
+.DS_Store
 # Local Netlify folder
 .netlify
-
-# Supabase
-supabase/.temp

@@ -1,160 +1,73 @@
-# Astro Supabase Starter
+# GCC TV Wordwall App
 
-![Astro Supabase Starter Preview](astro-supabase-starter-preview.png)
+An interactive and engaging Wordwall-style game application designed for GCC TV. Create, manage, and play educational games such as quizzes and matching pairs, with full localization and leaderboard support.
 
-**View demo:** [https://astro-supabase-starter.netlify.app/](https://astro-supabase-starter.netlify.app/)
+## ✨ Features
 
-The Astro Supabase starter demonstrates how to integrate **Supabase** into an Astro project deployed on Netlify.
+- **Game Management**: Easily create, edit, and manage games and questions.
+- **Multiple Game Templates**: Switch between "Match Up", "Quiz", and more templates instantly.
+- **Leaderboard**: Track high scores and student progress to foster competition.
+- **Localization**: Full support for English and Arabic, including RTL layout.
+- **Responsive Design & Themes**: Modern UI, theme selection, and seamless experience on any device.
+- **User Feedback**: Integrated notification system for actions and errors.
 
-## Deploying to Netlify
+## 🚀 Tech Stack
 
-If you click "Deploy to Netlify" button, it will create a new repo for you that looks exactly like this one, and sets that repo up immediately for deployment on Netlify.
+- **Frontend**: Astro, TypeScript, Vanilla JS
+- **Backend**: PHP (SQLite) for local dev, [Supabase](https://supabase.io/) for production (Postgres, Auth, APIs)
+- **Styling**: Tailwind CSS, custom CSS variables
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/astro-supabase-starter&fullConfiguration=true)
+## ⚙️ Getting Started
 
-## Astro Commands
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
-All commands are run from the root of the project, from a terminal:
+### Prerequisites
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+You need [Node.js](https://nodejs.org/en/) (v18 or newer) and `npm`, `pnpm`, or `yarn` installed on your system.
 
-## Developing Locally
+### Installation
 
-| Prerequisites                                                                |
-| :--------------------------------------------------------------------------- |
-| [Node.js](https://nodejs.org/) v18.14+                                       |
-| (optional) [nvm](https://github.com/nvm-sh/nvm) for Node version management  |
-| [Netlify account](https://netlify.com/)                                      |
-| [Netlify CLI](https://docs.netlify.com/cli/get-started/).                    |
-| [Supabase account](https://supabase.com/)                                    |
+1.  **Clone the repository**
 
-### Set up the PHP backend (SQLite)
+    ```bash
+    git clone https://github.com/aldoyh/gcc-tv-wordwall-app.git
+    cd gcc-tv-wordwall-app
+    ```
 
-This project now uses a PHP backend for all transactional and leaderboard operations, using SQLite for storage. The PHP API is located in `php-backend/api.php`.
+2.  **Install dependencies**
 
-#### How to use the PHP backend
+    ```bash
+    pnpm install
+    ```
 
-1. Make sure you have PHP 7.4+ installed with SQLite3 support.
-2. Start the PHP built-in server in the `php-backend` directory:
+3.  **Set up environment variables**
 
-   ```sh
-   cd php-backend
-   php -S localhost:9000
-   ```
+    Create a `.env` file by copying the example file:
 
-3. The API will be available at `http://localhost:9000/api.php`.
+    ```bash
+    cp .env-example .env
+    ```
 
-#### API Endpoints
+    Now, open the `.env` file and add your project-specific Supabase URL and Anon Key. You can find these in your Supabase project's API settings.
 
-All endpoints are accessed via `GET` or `POST` with an `action` parameter. All data is sent/received as JSON.
+4.  **Run the development server**
 
-### POST /api.php?action=add_answer
+    ```bash
+    pnpm run dev
+    ```
 
-Add a player's answer to a question.
+    Open http://localhost:5173 (or your framework's default port) to view it in the browser.
 
-Request body:
+## 📜 Available Scripts
 
-```json
-{
-  "question_id": 1,
-  "player_name": "Alice",
-  "answer": 2,
-  "response_time": 3.42
-}
-```
+- `pnpm run dev`: Starts the development server.
+- `pnpm run build`: Builds the app for production.
+- `pnpm run lint`: Lints the codebase for errors.
+- `pnpm run format`: Formats all files with Prettier.
 
-Response:
+## 🔒 Security Note
 
-```json
-{ "status": "ok" }
-```
-
-## **GET /api.php?action=get_answers&question_id=1**
-
-Get all answers for a question.
-
-Response:
-
-```json
-[
-  { "id": 1, "question_id": 1, "player_name": "Alice", "answer": 2, "response_time": 3.42, "created_at": "..." },
-  ...
-]
-```
-
-## **POST /api.php?action=add_leaderboard**
-
-Add a player to the leaderboard.
-
-Request body:
-
-```json
-{
-  "player_name": "Alice",
-  "score": 100
-}
-```
-
-Response:
-
-```json
-{ "status": "ok" }
-```
-
-**GET /api.php?action=get_leaderboard**
-
-Get the top 10 players on the leaderboard.
-
-Response:
-
-```json
-[
-  { "id": 1, "player_name": "Alice", "score": 100, "created_at": "..." },
-  ...
-]
-```
+This project uses Supabase's Row Level Security (RLS). Ensure RLS is enabled on all tables containing sensitive data to prevent unauthorized access.
 
 ---
-
-**Table structure:**
-
-- `questions`: id, text, options (JSON), correct_option
-- `answers`: id, question_id, player_name, answer, response_time, created_at
-- `leaderboard`: id, player_name, score, created_at
-
----
-
-### Install and run locally
-
-1. Clone this repository, then run `npm install` in its root directory.
-
-2. For the starter to have full functionality locally, please ensure you have an up-to-date version of Netlify CLI. Run:
-
-```sh
-npm install netlify-cli@latest -g
-```
-
-3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
-
-```sh
-netlify link
-```
-
-4. Then, run the Astro.js development server via Netlify CLI:
-
-```sh
-netlify dev --target-port 4321
-```
-
-If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
-
-## Support
-
-If you get stuck along the way, get help in our [support forums](https://answers.netlify.com/).
+For full usage instructions and feature details, see `Docs/USAGE.md` and `Docs/WordWall_Features.md`.

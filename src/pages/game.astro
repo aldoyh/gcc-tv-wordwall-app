@@ -20,27 +20,23 @@ if (!game) {
   <div class="container mx-auto p-4">
     <div class="flex justify-between items-center mb-4">
       <div>
-        <h1 id="game-title" class="text-3xl font-bold">{game.title}</h1>
-        <p id="game-description" class="text-gray-600">{game.description}</p>
+        <h1 id="game-title" class="text-3xl font-bold text-foreground">{game.title}</h1>
+        <p id="game-description" class="text-muted-foreground">{game.description}</p>
       </div>
       <div class="flex space-x-2">
-        <a id="add-questions-link" href={`/add-questions?game_id=${gameId}`} class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{t('add_questions')}</a>
-        <a id="edit-questions-link" href={`/edit-questions?game_id=${gameId}`} class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">{t('edit_questions')}</a>
-        <button id="switch-template-btn" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">{t('switch_template')}</button>
-        <select id="theme-select" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
-          <option value="default">{t('default_theme')}</option>
-          <option value="dark">{t('dark_theme')}</option>
-          <option value="colorful">{t('colorful_theme')}</option>
-        </select>
+        <a id="add-questions-link" href={`/add-questions?game_id=${gameId}`} class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">{t('add_questions')}</a>
+        <a id="edit-questions-link" href={`/edit-questions?game_id=${gameId}`} class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">{t('edit_questions')}</a>
+        <button id="switch-template-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2">{t('switch_template')}</button>
+        <button id="share-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600 h-10 px-4 py-2">{t('share')}</button>
       </div>
     </div>
 
-    <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
+    <div class="bg-muted text-muted-foreground p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
         <div id="timer" class="text-xl font-semibold">{t('time')}: 0s</div>
         <div id="score" class="text-xl font-semibold">{t('score')}: 0</div>
     </div>
 
-    <div id="game-area" class="bg-white p-6 rounded-lg shadow-lg min-h-[300px]">
+    <div id="game-area" class="bg-card text-card-foreground p-6 rounded-lg shadow-lg min-h-[300px] border border-border">
       {game.template === 'match-up' && (
         <div id="match-up-game">
           <div id="game-container" class="flex flex-col md:flex-row justify-around">
@@ -48,8 +44,8 @@ if (!game) {
             <div id="definition-container" class="definition-container p-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
           </div>
           <div id="controls" class="mt-4 flex justify-center space-x-4">
-            <button id="reset-btn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('reset')}</button>
-            <button id="check-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{t('check_answers')}</button>
+            <button id="reset-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2">{t('reset')}</button>
+            <button id="check-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">{t('check_answers')}</button>
           </div>
         </div>
       )}
@@ -58,54 +54,136 @@ if (!game) {
         <div id="quiz-game" class="flex flex-col items-center justify-center h-full">
           <h2 id="quiz-question" class="text-2xl font-bold mb-6 text-center"></h2>
           <div id="quiz-options" class="grid grid-cols-1 gap-4 w-full max-w-md"></div>
-          <button id="next-question-btn" class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="display:none;">{t('next_question')}</button>
+          <button id="next-question-btn" class="mt-6 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" style="display:none;">{t('next_question')}</button>
         </div>
       )}
     </div>
 
-    <div id="leaderboard-form" style="display: none;" class="mt-6 max-w-md mx-auto bg-gray-200 p-6 rounded-lg">
+    <div id="leaderboard-form" style="display: none;" class="mt-6 max-w-md mx-auto bg-card text-card-foreground p-6 rounded-lg border border-border">
         <h2 class="text-2xl font-bold mb-4 text-center">{t('add_to_leaderboard')}</h2>
         <form>
-            <input type="text" id="name-input" placeholder={t('enter_your_name')} class="p-2 border rounded" />
-            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">{t('submit')}</button>
+            <input type="text" id="name-input" placeholder={t('enter_your_name')} class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <button type="submit" class="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">{t('submit')}</button>
         </form>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div id="share-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-card text-card-foreground p-6 rounded-lg shadow-lg max-w-sm w-full relative">
+      <button id="close-share-modal" class="absolute top-2 right-2 text-2xl text-foreground hover:text-destructive">&times;</button>
+      <h2 class="text-2xl font-bold mb-4 text-center">{t('share_game')}</h2>
+      <div class="flex flex-col items-center">
+        <div id="qr-code-container" class="p-2 border border-border rounded-md mb-4 bg-white">
+          <!-- QR Code will be generated here -->
+        </div>
+        <input type="text" id="game-url-input" readonly class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-center" />
+        <button id="copy-url-btn" class="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">{t('copy_url')}</button>
+      </div>
     </div>
   </div>
 </Layout>
 
 <script>
-  import "../styles/game.css";
-  import { showNotification } from '../utils/notifications';
-  import { t } from '../utils/i18n';
+  interface Question {
+    id: number;
+    text: string;
+    options: string[];
+    correct_option: number;
+  }
 
-    let score: number = 0;
-    let time: number = 0;
-    let timerInterval: number | undefined;
-    let currentQuestions: Question[] = [];
-    let currentQuestionIndex: number = 0;
+  declare var qrcode: any;
 
-    const timerEl = document.getElementById('timer');
-    const scoreEl = document.getElementById('score');
-    const gameArea = document.getElementById('game-area');
-    const leaderboardForm = document.getElementById('leaderboard-form');
-    const gameTitleEl = document.getElementById('game-title');
-    const gameDescriptionEl = document.getElementById('game-description');
-    const addQuestionsLink = document.getElementById('add-questions-link') as HTMLAnchorElement;
-    const editQuestionsLink = document.getElementById('edit-questions-link') as HTMLAnchorElement;
-    const switchTemplateBtn = document.getElementById('switch-template-btn');
-    const themeSelect = document.getElementById('theme-select') as HTMLSelectElement;
+  let score: number = 0;
+  let time: number = 0;
+  let timerInterval: number | undefined;
+  let currentQuestions: Question[] = [];
+  let currentQuestionIndex: number = 0;
 
-    // Match-up specific elements
-    const termContainer = document.getElementById('term-container');
-    const definitionContainer = document.getElementById('definition-container');
-    const resetBtn = document.getElementById('reset-btn');
-    const checkBtn = document.getElementById('check-btn');
+  let timerEl: HTMLElement | null = null;
+  let scoreEl: HTMLElement | null = null;
+  let gameArea: HTMLElement | null = null;
+  let leaderboardForm: HTMLElement | null = null;
+  let gameTitleEl: HTMLElement | null = null;
+  let gameDescriptionEl: HTMLElement | null = null;
+  let addQuestionsLink: HTMLAnchorElement | null = null;
+  let editQuestionsLink: HTMLAnchorElement | null = null;
+  let switchTemplateBtn: HTMLButtonElement | null = null;
+  let shareBtn: HTMLButtonElement | null = null;
+  let termContainer: HTMLElement | null = null;
+  let definitionContainer: HTMLElement | null = null;
+  let resetBtn: HTMLButtonElement | null = null;
+  let checkBtn: HTMLButtonElement | null = null;
+  let quizGameDiv: HTMLElement | null = null;
+  let quizQuestionEl: HTMLElement | null = null;
+  let quizOptionsEl: HTMLElement | null = null;
+  let nextQuestionBtn: HTMLButtonElement | null = null;
 
-    // Quiz specific elements
-    const quizGameDiv = document.getElementById('quiz-game');
-    const quizQuestionEl = document.getElementById('quiz-question');
-    const quizOptionsEl = document.getElementById('quiz-options');
-    const nextQuestionBtn = document.getElementById('next-question-btn');
+  document.addEventListener('DOMContentLoaded', () => {
+    timerEl = document.getElementById('timer');
+    scoreEl = document.getElementById('score');
+    gameArea = document.getElementById('game-area');
+    leaderboardForm = document.getElementById('leaderboard-form');
+    gameTitleEl = document.getElementById('game-title');
+    gameDescriptionEl = document.getElementById('game-description');
+    addQuestionsLink = document.getElementById('add-questions-link') as HTMLAnchorElement;
+    editQuestionsLink = document.getElementById('edit-questions-link') as HTMLAnchorElement;
+    switchTemplateBtn = document.getElementById('switch-template-btn') as HTMLButtonElement | null;
+    shareBtn = document.getElementById('share-btn') as HTMLButtonElement | null;
+    termContainer = document.getElementById('term-container');
+    definitionContainer = document.getElementById('definition-container');
+    resetBtn = document.getElementById('reset-btn') as HTMLButtonElement | null;
+    checkBtn = document.getElementById('check-btn') as HTMLButtonElement | null;
+    quizGameDiv = document.getElementById('quiz-game');
+    quizQuestionEl = document.getElementById('quiz-question');
+    quizOptionsEl = document.getElementById('quiz-options');
+    nextQuestionBtn = document.getElementById('next-question-btn') as HTMLButtonElement | null;
+
+    if (timerEl) timerEl.setAttribute('aria-label', t('timer_label'));
+    if (scoreEl) scoreEl.setAttribute('aria-label', t('score_label'));
+
+    // Attach event listeners that require DOM elements
+    if (resetBtn !== null) resetBtn.addEventListener('click', () => location.reload());
+    if (checkBtn !== null) checkBtn.addEventListener('click', checkAnswers);
+    if (switchTemplateBtn !== null) switchTemplateBtn.addEventListener('click', async () => {
+      const newTemplate = prompt(t('enter_new_template'));
+      if (newTemplate) {
+        const gameId = new URLSearchParams(window.location.search).get('id');
+        const response = await fetch('/php-backend/api.php?action=update_game_template', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ game_id: gameId, template: newTemplate }),
+        });
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          showNotification({ message: t('error_switching_template'), type: 'error' });
+        }
+      }
+
+    document.querySelector('#leaderboard-form form')?.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('name-input') as HTMLInputElement;
+      const name = nameInput?.value.trim();
+      if (name) {
+        const response = await fetch('/php-backend/api.php?action=add_leaderboard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ player_name: name, score }),
+        });
+        if (response.ok) {
+          window.location.href = '/leaderboard';
+        } else {
+          showNotification({ message: t('error_submitting_score'), type: 'error' });
+        }
+      }
+    });
+
+
+
+    // Initialize game after DOM is ready
+    initGame();
+  });
 
     interface Question {
       id: number;
@@ -173,7 +251,7 @@ if (!game) {
       }
 
       // Show loading indicator
-      if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('loading_game')}</p>`;
+      if (gameArea) gameArea.innerHTML = `<p class="text-center text-muted-foreground">${t('loading_game')}</p>`;
 
       const game = await getGame(gameId);
       if (!game) {
@@ -188,7 +266,7 @@ if (!game) {
 
       currentQuestions = await getQuestions(gameId);
       if (currentQuestions.length === 0) {
-        if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('no_questions_found')}</p>`;
+        if (gameArea) gameArea.innerHTML = `<p class="text-center text-muted-foreground">${t('no_questions_found')}</p>`;
         return;
       }
       startTimer();
@@ -198,47 +276,47 @@ if (!game) {
       } else if (game.template === 'quiz') {
         initQuizGame();
       } else {
-        if (gameArea) gameArea.innerHTML = `<p class="text-center text-gray-500">${t('unsupported_game_template')}</p>`;
+        if (gameArea) gameArea.innerHTML = `<p class="text-center text-muted-foreground">${t('unsupported_game_template')}</p>`;
       }
     }
 
     function initMatchUpGame() {
       if (!termContainer || !definitionContainer) return;
 
-      termContainer.innerHTML = '';
-      definitionContainer.innerHTML = '';
+      if (termContainer) termContainer.innerHTML = '';
+      if (definitionContainer) definitionContainer.innerHTML = '';
 
-      currentQuestions.forEach((question: Question, index: number) => {
+      currentQuestions.forEach((_, index: number) => { // Changed 'question' to '_' as it's not used
         const termEl = document.createElement('div');
         termEl.id = `term${index}`;
-        termEl.className = 'term bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100 transition-colors';
-        termEl.textContent = question.text;
+        termEl.className = 'term bg-card text-card-foreground p-4 rounded-lg shadow cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors border border-border';
+        termEl.textContent = currentQuestions[index].text;
         termEl.draggable = true;
         termEl.addEventListener('dragstart', (e: DragEvent) => {
           if (e.dataTransfer) e.dataTransfer.setData('text/plain', termEl.id);
         });
-        termContainer.appendChild(termEl);
+        if (termContainer) termContainer.appendChild(termEl);
 
         const defEl = document.createElement('div');
         defEl.id = `def${index}`;
-        defEl.className = 'definition drop-target bg-gray-200 p-4 rounded-lg shadow min-h-[60px] flex items-center justify-center';
+        defEl.className = 'definition drop-target bg-muted text-muted-foreground p-4 rounded-lg shadow min-h-[60px] flex items-center justify-center border border-border';
         defEl.addEventListener('dragover', (e: DragEvent) => {
           e.preventDefault();
-          defEl.classList.add('bg-green-200');
+          defEl.classList.add('bg-accent/50');
         });
         defEl.addEventListener('dragleave', (e: DragEvent) => {
             e.preventDefault();
-            defEl.classList.remove('bg-green-200');
+            defEl.classList.remove('bg-accent/50');
         });
         defEl.addEventListener('drop', (e: DragEvent) => {
           e.preventDefault();
-          defEl.classList.remove('bg-green-200');
+          defEl.classList.remove('bg-accent/50');
           const termId = e.dataTransfer?.getData('text/plain');
           const droppedTermEl = document.getElementById(termId || '');
           if (droppedTermEl && !defEl.hasChildNodes()) { // Prevent dropping on an already matched definition
             if (termId?.replace('term', '') === defEl.id.replace('def', '')) {
               defEl.appendChild(droppedTermEl);
-              defEl.classList.add('!bg-green-500', 'text-white');
+              defEl.classList.add('bg-primary', 'text-primary-foreground');
               droppedTermEl.classList.add('opacity-50', 'cursor-not-allowed');
               droppedTermEl.draggable = false;
               updateScore(10);
@@ -247,14 +325,14 @@ if (!game) {
                 if (leaderboardForm) leaderboardForm.style.display = 'block';
               }
             } else {
-              defEl.classList.add('!bg-red-500');
+              defEl.classList.add('bg-destructive', 'text-destructive-foreground');
               setTimeout(() => {
-                defEl.classList.remove('!bg-red-500');
+                defEl.classList.remove('bg-destructive', 'text-destructive-foreground');
               }, 500);
             }
           }
         });
-        definitionContainer.appendChild(defEl);
+        if (definitionContainer) definitionContainer.appendChild(defEl);
       });
     }
 
@@ -268,12 +346,12 @@ if (!game) {
         if (defEl && termEl) {
           // Check if the term is inside the correct definition
           if (defEl.contains(termEl) && termEl.id.replace('term', '') === defEl.id.replace('def', '')) {
-            defEl.classList.remove('!bg-red-500');
-            defEl.classList.add('!bg-green-500', 'text-white');
+            defEl.classList.remove('bg-destructive', 'text-destructive-foreground');
+            defEl.classList.add('bg-primary', 'text-primary-foreground');
             correctMatches++;
           } else {
-            defEl.classList.remove('!bg-green-500', 'text-white');
-            defEl.classList.add('!bg-red-500');
+            defEl.classList.remove('bg-primary', 'text-primary-foreground');
+            defEl.classList.add('bg-destructive', 'text-destructive-foreground');
           }
         }
       });
@@ -307,15 +385,15 @@ if (!game) {
 
       const question = currentQuestions[currentQuestionIndex];
       quizQuestionEl.textContent = question.text;
-      quizOptionsEl.innerHTML = '';
-      nextQuestionBtn.style.display = 'none';
+      if (quizOptionsEl) quizOptionsEl.innerHTML = '';
+      if (nextQuestionBtn) nextQuestionBtn.style.display = 'none';
 
-      question.options.forEach((option, index) => {
+      question.options.forEach((option: string, index: number) => {
         const optionBtn = document.createElement('button');
-        optionBtn.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded shadow-md';
+        optionBtn.className = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2';
         optionBtn.textContent = option;
         optionBtn.addEventListener('click', () => checkAnswer(index, question.correct_option, optionBtn));
-        quizOptionsEl.appendChild(optionBtn);
+        if (quizOptionsEl) quizOptionsEl.appendChild(optionBtn);
       });
     }
 
@@ -323,27 +401,29 @@ if (!game) {
       if (!quizOptionsEl || !nextQuestionBtn) return;
 
       // Disable all option buttons after an answer is selected
-      Array.from(quizOptionsEl.children).forEach(btn => {
-        (btn as HTMLButtonElement).disabled = true;
-      });
+      if (quizOptionsEl) {
+        Array.from(quizOptionsEl.children).forEach(btn => {
+          (btn as HTMLButtonElement).disabled = true;
+        });
+      }
 
       if (selectedIndex === correctIndex) {
         updateScore(10);
-        button.classList.remove('bg-gray-200', 'hover:bg-gray-300');
-        button.classList.add('bg-green-500', 'text-white');
+        button.classList.remove('bg-destructive', 'text-destructive-foreground');
+        button.classList.add('bg-primary', 'text-primary-foreground');
         showNotification({ message: t('correct'), type: 'success' });
       } else {
-        button.classList.remove('bg-gray-200', 'hover:bg-gray-300');
-        button.classList.add('bg-red-500', 'text-white');
+        button.classList.remove('bg-primary', 'text-primary-foreground');
+        button.classList.add('bg-destructive', 'text-destructive-foreground');
         showNotification({ message: t('incorrect'), type: 'error' });
         // Highlight correct answer
         Array.from(quizOptionsEl.children).forEach((btn, index) => {
           if (index === correctIndex) {
-            btn.classList.add('border-2', 'border-green-700');
+            btn.classList.add('border-2', 'border-primary');
           }
         });
       }
-      nextQuestionBtn.style.display = 'block';
+      if (nextQuestionBtn) nextQuestionBtn.style.display = 'block';
     }
 
     function endQuiz() {
@@ -352,60 +432,10 @@ if (!game) {
         quizGameDiv.innerHTML = `
           <h2 class="text-3xl font-bold mb-4">${t('quiz_finished')}</h2>
           <p class="text-xl mb-4">${t('your_final_score')} ${score}</p>
-          <button id="play-again-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">${t('play_again')}</button>
+          <button id="play-again-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">${t('play_again')}</button>
         `;
-        document.getElementById('play-again-btn')?.addEventListener('click', () => location.reload());
       }
-      if (leaderboardForm) leaderboardForm.style.display = 'block';
+
     }
-
-    initGame();
-
-    resetBtn?.addEventListener('click', () => location.reload());
-
-    checkBtn?.addEventListener('click', checkAnswers);
-
-    document.getElementById('leaderboard-form form')?.addEventListener('submit', async (e: Event) => {
-      e.preventDefault();
-      const nameInput = document.getElementById('name-input') as HTMLInputElement;
-      const name = nameInput?.value.trim();
-      if (name) {
-        const response = await fetch('/php-backend/api.php?action=add_leaderboard', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ player_name: name, score }),
-        });
-        if (response.ok) {
-          window.location.href = '/leaderboard';
-        } else {
-          showNotification({ message: t('error_submitting_score'), type: 'error' });
-        }
-      }
-    });
-
-    switchTemplateBtn?.addEventListener('click', async () => {
-      const newTemplate = prompt(t('enter_new_template'));
-      if (newTemplate) {
-        const gameId = new URLSearchParams(window.location.search).get('id');
-        const response = await fetch('/php-backend/api.php?action=update_game_template', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ game_id: gameId, template: newTemplate }),
-        });
-
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          showNotification({ message: t('error_switching_template'), type: 'error' });
-        }
-      }
-    });
-
-    themeSelect?.addEventListener('change', (e) => {
-      const selectedTheme = (e.target as HTMLSelectElement).value;
-      document.body.className = ''; // Clear existing classes
-      if (selectedTheme !== 'default') {
-        document.body.classList.add(`${selectedTheme}-theme`);
-      }
-    });
+  );
 </script>

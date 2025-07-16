@@ -35,27 +35,15 @@ In the same way we can turn your resource into a Quiz or a Wordsearch and many m
 
 How do I switch my activity's template?
 How many templates can I switch into?
-I'm not seeing the template option I want...
+## Feature Highlights
 
-Edit any activity
-There's no need to settle for pre-made activities. If you find an activity but it's not quite right, you can easily customize the material to suit your class and your teaching style.
+- **Switching Templates**: Instantly switch your activity between different game templates (Quiz, Match Up, Crossword, etc.) for differentiation and reinforcement.
+- **Edit Any Activity**: Customize any activity to suit your class and teaching style. Editing a public activity creates a private copy for you to modify.
+- **Visual Styles & Options**: Choose from multiple visual styles, fonts, and sounds. Set timers, adjust gameplay speed, and print with custom options.
+- **Student Assignments**: Assign activities directly to students for focused practice or homework. Students access only the assigned activity, minimizing distractions.
 
-How do I edit an activity?
-What happens if I edit a public activity?
-
-Visual styles and options
-Interactives can be presented in different visual styles. Each visual style changes the look and feel with different graphics, fonts, and sounds.
-
-You'll also find further options to set a timer or change the gameplay.
-
-The printables have options too. For example, you can change the font, or print multiple copies per page.
-
-How do I set a timer?
-My students are finding the game too fast...
-Do you have a visual style that's good for Kindergarten, Reception or Key Stage 1?
-Can I change the options on someone else's activity?
-
-Student assignments
+---
+For more details, see `Docs/WordWall_Features.md` and the in-app help.
 Wordwall activities can be used as student-completed assignments. When a teacher sets an assignment, students are directed to that one activity without the distraction of visiting the main activity page.
 
 This feature can be used in-class where students have access to their own devices, or as a way of setting homework.

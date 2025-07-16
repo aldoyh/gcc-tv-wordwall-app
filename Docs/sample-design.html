@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق كاهوت البديل - صفحة الهبوط</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Cairo (for Arabic text) and Roboto (for sans-serif fallback) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define CSS Variables for Light Mode */
+        :root {
+            --background: oklch(1.0000 0 0); /* White */
+            --foreground: oklch(0.3588 0.1354 278.6973); /* Dark Blue/Purple */
+            --card: oklch(1.0000 0 0); /* White */
+            --card-foreground: oklch(0.3588 0.1354 278.6973); /* Dark Blue/Purple */
+            --popover: oklch(1.0000 0 0);
+            --popover-foreground: oklch(0.3588 0.1354 278.6973);
+            --primary: oklch(0.6056 0.2189 292.7172); /* Main Indigo/Blue */
+            --primary-foreground: oklch(1.0000 0 0); /* White */
+            --secondary: oklch(0.9618 0.0202 295.1913); /* Light Grayish Blue */
+            --secondary-foreground: oklch(0.4568 0.2146 277.0229); /* Medium Blue/Purple */
+            --muted: oklch(0.9691 0.0161 293.7558); /* Very Light Grayish Blue */
+            --muted-foreground: oklch(0.5413 0.2466 293.0090); /* Muted Blue/Purple */
+            --accent: oklch(0.9319 0.0316 255.5855); /* Light Yellow/Green */
+            --accent-foreground: oklch(0.4244 0.1809 265.6377); /* Darker Yellow/Green */
+            --destructive: oklch(0.6368 0.2078 25.3313); /* Red */
+            --destructive-foreground: oklch(1.0000 0 0); /* White */
+            --border: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --input: oklch(0.9299 0.0334 272.7879);
+            --ring: oklch(0.6056 0.2189 292.7172);
+            --chart-1: oklch(0.6056 0.2189 292.7172);
+            --chart-2: oklch(0.5413 0.2466 293.0090);
+            --chart-3: oklch(0.4907 0.2412 292.5809);
+            --chart-4: oklch(0.4320 0.2106 292.7591);
+            --chart-5: oklch(0.3796 0.1783 293.7446);
+            --sidebar: oklch(0.9691 0.0161 293.7558);
+            --sidebar-foreground: oklch(0.3588 0.1354 278.6973);
+            --sidebar-primary: oklch(0.6056 0.2189 292.7172);
+            --sidebar-primary-foreground: oklch(1.0000 0 0);
+            --sidebar-accent: oklch(0.9319 0.0316 255.5855);
+            --sidebar-accent-foreground: oklch(0.4244 0.1809 265.6377);
+            --sidebar-border: oklch(0.9299 0.0334 272.7879);
+            --sidebar-ring: oklch(0.6056 0.2189 292.7172);
+
+            --font-sans: 'Roboto', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            --font-mono: 'Fira Code', monospace;
+            --radius: 0.625rem;
+            --shadow-2xs: 2px 2px 4px 0px hsl(255 86% 66% / 0.10);
+            --shadow-xs: 2px 2px 4px 0px hsl(255 86% 66% / 0.10);
+            --shadow-sm: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 1px 2px -1px hsl(255 86% 66% / 0.20);
+            --shadow: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 1px 2px -1px hsl(255 86% 66% / 0.20);
+            --shadow-md: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 2px 4px -1px hsl(255 86% 66% / 0.20);
+            --shadow-lg: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 4px 6px -1px hsl(255 86% 66% / 0.20);
+            --shadow-xl: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 8px 10px -1px hsl(255 86% 66% / 0.20);
+            --shadow-2xl: 2px 2px 4px 0px hsl(255 86% 66% / 0.50);
+            --tracking-normal: 0em;
+            --spacing: 0.25rem;
+        }
+
+        /* Define CSS Variables for Dark Mode */
+        html.dark {
+            --background: oklch(0.2077 0.0398 265.7549); /* Dark Background */
+            --foreground: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --card: oklch(0.2573 0.0861 281.2883); /* Darker Card Background */
+            --card-foreground: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --popover: oklch(0.2573 0.0861 281.2883);
+            --popover-foreground: oklch(0.9299 0.0334 272.7879);
+            --primary: oklch(0.6056 0.2189 292.7172); /* Main Indigo/Blue */
+            --primary-foreground: oklch(1.0000 0 0); /* White */
+            --secondary: oklch(0.2573 0.0861 281.2883); /* Darker Secondary */
+            --secondary-foreground: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --muted: oklch(0.2573 0.0861 281.2883); /* Dark Muted Background */
+            --muted-foreground: oklch(0.8112 0.1013 293.5712); /* Lighter Muted Foreground */
+            --accent: oklch(0.4568 0.2146 277.0229); /* Darker Accent */
+            --accent-foreground: oklch(0.9299 0.0334 272.7879); /* Light Grayish Blue */
+            --destructive: oklch(0.6368 0.2078 25.3313); /* Red */
+            --destructive-foreground: oklch(1.0000 0 0); /* White */
+            --border: oklch(0.2827 0.1351 291.0894); /* Dark Border */
+            --input: oklch(0.2827 0.1351 291.0894);
+            --ring: oklch(0.6056 0.2189 292.7172);
+            --chart-1: oklch(0.7090 0.1592 293.5412);
+            --chart-2: oklch(0.6056 0.2189 292.7172);
+            --chart-3: oklch(0.5413 0.2466 293.0090);
+            --chart-4: oklch(0.4907 0.2412 292.5809);
+            --chart-5: oklch(0.4320 0.2106 292.7591);
+            --sidebar: oklch(0.2077 0.0398 265.7549);
+            --sidebar-foreground: oklch(0.9299 0.0334 272.7879);
+            --sidebar-primary: oklch(0.6056 0.2189 292.7172);
+            --sidebar-primary-foreground: oklch(1.0000 0 0);
+            --sidebar-accent: oklch(0.4568 0.2146 277.0229);
+            --sidebar-accent-foreground: oklch(0.9299 0.0334 272.7879);
+            --sidebar-border: oklch(0.2827 0.1351 291.0894);
+            --sidebar-ring: oklch(0.6056 0.2189 292.7172);
+
+            --font-sans: 'Roboto', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            --font-mono: 'Fira Code', monospace;
+            --radius: 0.625rem;
+            --shadow-2xs: 2px 2px 4px 0px hsl(255 86% 66% / 0.10);
+            --shadow-xs: 2px 2px 4px 0px hsl(255 86% 66% / 0.10);
+            --shadow-sm: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 1px 2px -1px hsl(255 86% 66% / 0.20);
+            --shadow: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 1px 2px -1px hsl(255 86% 66% / 0.20);
+            --shadow-md: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 2px 4px -1px hsl(255 86% 66% / 0.20);
+            --shadow-lg: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 4px 6px -1px hsl(255 86% 66% / 0.20);
+            --shadow-xl: 2px 2px 4px 0px hsl(255 86% 66% / 0.20), 2px 8px 10px -1px hsl(255 86% 66% / 0.20);
+            --shadow-2xl: 2px 2px 4px 0px hsl(255 86% 66% / 0.50);
+        }
+
+        /* Base styles using CSS variables */
+        body {
+            font-family: 'Cairo', var(--font-sans); /* Apply Arabic font, with Roboto as fallback */
+            background-color: var(--background);
+            color: var(--foreground);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .hero-bg {
+            background-image: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: background-image 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-foreground);
+            color: var(--primary);
+        }
+        /* Specific hover for the CTA button to use muted */
+        .btn-cta-alt:hover {
+            background-color: var(--muted);
+            color: var(--primary);
+        }
+        .feature-card {
+            background-color: var(--card);
+            color: var(--card-foreground);
+            box-shadow: var(--shadow-sm); /* Using shadow-sm from theme */
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            border-radius: var(--radius); /* Apply radius from theme */
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md); /* Slightly larger shadow on hover */
+        }
+        .feature-icon-primary { color: var(--primary); }
+        .feature-icon-secondary { color: var(--secondary-foreground); } /* Using secondary-foreground for better contrast */
+        .feature-icon-accent { color: var(--accent); }
+
+        /* Toggle Switch Styling */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--muted);
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--primary-foreground);
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body class="text-right">
+    <!-- Header Section -->
+    <header class="bg-[var(--card)] shadow-md py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-[var(--primary)]">
+                تطبيقنا
+                <span class="text-[var(--secondary-foreground)]">التعليمي</span>
+            </div>
+            <nav class="flex items-center space-x-4 space-x-reverse">
+                <ul class="flex space-x-4 space-x-reverse">
+                    <li><a href="#features" class="text-[var(--muted-foreground)] hover:text-[var(--primary)] font-semibold rounded-md">المميزات</a></li>
+                    <li><a href="#how-it-works" class="text-[var(--muted-foreground)] hover:text-[var(--primary)] font-semibold rounded-md">كيف يعمل؟</a></li>
+                    <li><a href="#contact" class="text-[var(--muted-foreground)] hover:text-[var(--primary)] font-semibold rounded-md">اتصل بنا</a></li>
+                </ul>
+                <!-- Theme Toggle Switch -->
+                <label class="toggle-switch mr-4">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg text-[var(--primary-foreground)] py-20 rounded-b-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-extrabold mb-6 leading-tight">
+                اجعل التعلم <span class="text-[var(--accent)]">ممتعاً</span> وتفاعلياً!
+            </h1>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                تطبيقنا البديل لكاهوت يقدم تجربة تعليمية فريدة ومثيرة، مثالية للمدارس، الجامعات، والتدريب المؤسسي.
+            </p>
+            <button class="btn-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl">
+                ابدأ مجاناً الآن!
+            </button>
+            <p class="mt-4 text-sm opacity-80">
+                لا يتطلب بطاقة ائتمان
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-[var(--muted)]">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-[var(--foreground)] mb-12">
+                مميزات تجعل التعلم أفضل
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature Card 1 -->
+                <div class="feature-card p-6 rounded-lg text-center">
+                    <div class="feature-icon-primary text-5xl mb-4">
+                        <!-- Icon for Quizzes -->
+                        <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">
+                        اختبارات تفاعلية
+                    </h3>
+                    <p class="text-[var(--muted-foreground)]">
+                        أنشئ اختبارات جذابة مع أنواع أسئلة متعددة وصور ومقاطع فيديو.
+                    </p>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="feature-card p-6 rounded-lg text-center">
+                    <div class="feature-icon-secondary text-5xl mb-4">
+                        <!-- Icon for Live Games -->
+                        <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2a1 1 0 100-2h-2z"></path><path fill-rule="evenodd" d="M19 10a9 9 0 11-18 0 9 9 0 0118 0zm-9 6a1 1 0 100-2 1 1 0 000 2zm-2-2a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2zm-2-6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">
+                        ألعاب مباشرة ومسابقات
+                    </h3>
+                    <p class="text-[var(--muted-foreground)]">
+                        استضف ألعاباً مباشرة مع لوحات صدارة في الوقت الفعلي وموسيقى تصويرية.
+                    </p>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="feature-card p-6 rounded-lg text-center">
+                    <div class="feature-icon-accent text-5xl mb-4">
+                        <!-- Icon for Analytics -->
+                        <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm-3.5 9.5a.5.5 0 01-1 0v-3a.5.5 0 011 0v3zm2.5 0a.5.5 0 01-1 0v-6a.5.5 0 011 0v6zm2.5 0a.5.5 0 01-1 0v-4a.5.5 0 011 0v4z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-[var(--foreground)] mb-3">
+                        تقارير وتحليلات مفصلة
+                    </h3>
+                    <p class="text-[var(--muted-foreground)]">
+                        تتبع تقدم الطلاب وحدد نقاط القوة والضعف بسهولة.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 bg-[var(--background)]">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-[var(--foreground)] mb-12">
+                كيف يعمل تطبيقنا؟
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="lg:order-2">
+                    <img src="https://placehold.co/600x400/e0e7ff/4c51bf?text=إنشاء+اختبار" alt="Create Quiz" class="rounded-[var(--radius)] shadow-[var(--shadow)] w-full h-auto">
+                </div>
+                <div class="lg:order-1 text-right">
+                    <h3 class="text-3xl font-semibold text-[var(--foreground)] mb-4">
+                        1. أنشئ ألعابك التعليمية
+                    </h3>
+                    <p class="text-[var(--muted-foreground)] text-lg mb-4">
+                        ابدأ بإنشاء اختبارات ومسابقات مخصصة في دقائق. اختر من بين أنواع الأسئلة المتعددة، أضف الصور، ومقاطع الفيديو لجعلها أكثر جاذبية.
+                    </p>
+                    <ul class="list-disc list-inside text-[var(--muted-foreground)] text-lg space-y-2">
+                        <li>تصميم سهل الاستخدام</li>
+                        <li>مكتبة قوالب جاهزة</li>
+                        <li>دعم للوسائط المتعددة</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
+                <div class="lg:order-1">
+                    <img src="https://placehold.co/600x400/e0e7ff/4c51bf?text=استضف+اللعبة" alt="Host Game" class="rounded-[var(--radius)] shadow-[var(--shadow)] w-full h-auto">
+                </div>
+                <div class="lg:order-2 text-right">
+                    <h3 class="text-3xl font-semibold text-[var(--foreground)] mb-4">
+                        2. استضف وشارك مع جمهورك
+                    </h3>
+                    <p class="text-[var(--muted-foreground)] text-lg mb-4">
+                        استضف ألعابك مباشرة في الفصل الدراسي أو عبر الإنترنت. شارك رمز اللعبة مع اللاعبين ودع المرح يبدأ!
+                    </p>
+                    <ul class="list-disc list-inside text-[var(--muted-foreground)] text-lg space-y-2">
+                        <li>وضع اللعب الجماعي المباشر</li>
+                        <li>وضع التحدي الذاتي</li>
+                        <li>مشاركة سهلة عبر الرمز</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
+                <div class="lg:order-2">
+                    <img src="https://placehold.co/600x400/e0e7ff/4c51bf?text=تتبع+التقدم" alt="Track Progress" class="rounded-[var(--radius)] shadow-[var(--shadow)] w-full h-auto">
+                </div>
+                <div class="lg:order-1 text-right">
+                    <h3 class="text-3xl font-semibold text-[var(--foreground)] mb-4">
+                        3. تتبع التقدم وحلل النتائج
+                    </h3>
+                    <p class="text-[var(--muted-foreground)] text-lg mb-4">
+                        احصل على تقارير مفصلة بعد كل لعبة لتقييم أداء اللاعبين وتحديد المجالات التي تحتاج إلى تحسين.
+                    </p>
+                    <ul class="list-disc list-inside text-[var(--muted-foreground)] text-lg space-y-2">
+                        <li>لوحات صدارة في الوقت الفعلي</li>
+                        <li>تقارير شاملة قابلة للتصدير</li>
+                        <li>تحليلات فردية وجماعية</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="bg-[var(--primary)] text-[var(--primary-foreground)] py-16 rounded-t-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-6">
+                جاهز لتبدأ رحلتك التعليمية الممتعة؟
+            </h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                انضم إلى الآلاف من المعلمين والطلاب الذين يستخدمون تطبيقنا لجعل التعلم تجربة لا تُنسى.
+            </p>
+            <button class="btn-primary btn-cta-alt bg-[var(--primary-foreground)] text-[var(--primary)] font-bold py-4 px-10 rounded-full text-xl shadow-lg hover:shadow-xl">
+                ابدأ تجربتك المجانية اليوم!
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="contact" class="bg-[var(--sidebar)] text-[var(--sidebar-foreground)] py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 تطبيقنا التعليمي. جميع الحقوق محفوظة.</p>
+            <div class="mt-4 flex justify-center space-x-4 space-x-reverse">
+                <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">سياسة الخصوصية</a>
+                <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">شروط الخدمة</a>
+                <a href="#" class="hover:text-[var(--sidebar-primary-foreground)]">الدعم</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement; // This refers to the <html> tag
+
+            // Function to set the theme
+            const setTheme = (isDarkMode) => {
+                if (isDarkMode) {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            // Check for saved theme preference on load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                themeToggle.checked = true;
+                setTheme(true);
+            } else {
+                // Default to light if no preference or preference is 'light'
+                themeToggle.checked = false;
+                setTheme(false);
+            }
+
+            // Listen for toggle changes
+            themeToggle.addEventListener('change', () => {
+                setTheme(themeToggle.checked);
+            });
+        });
+    </script>
+</body>
+</html>

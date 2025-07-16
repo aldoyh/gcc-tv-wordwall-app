@@ -5,29 +5,27 @@ import { t } from '../utils/i18n';
 
 <Layout title={t('create_new_game')}>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6 text-center">{t('create_a_new_game')}</h1>
-    <form id="create-game-form" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold mb-6 text-foreground text-center">{t('create_a_new_game')}</h1>
+    <form id="create-game-form" class="max-w-lg mx-auto bg-card text-card-foreground p-8 rounded-lg shadow-md border border-border">
       <div class="mb-4">
-        <label for="title" class="block text-gray-700 font-bold mb-2">{t('title')}:</label>
-        <input type="text" id="title" name="title" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <label for="title" class="block text-sm font-medium mb-2">{t('title')}:</label>
+        <input type="text" id="title" name="title" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       </div>
       <div class="mb-4">
-        <label for="description" class="block text-gray-700 font-bold mb-2">{t('description')}:</label>
-        <textarea id="description" name="description" required rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        <label for="description" class="block text-sm font-medium mb-2">{t('description')}:</label>
+        <textarea id="description" name="description" required rows="4" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"></textarea>
       </div>
       <div class="mb-6">
-        <label for="template" class="block text-gray-700 font-bold mb-2">{t('template')}:</label>
-        <select id="template" name="template" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <label for="template" class="block text-sm font-medium mb-2">{t('template')}:</label>
+        <select id="template" name="template" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
           <option value="match-up">{t('match_up')}</option>
           <option value="quiz">{t('quiz')}</option>
           <option value="crossword">{t('crossword')}</option>
-          <option value="maze-chase">{t('maze_chase')}</option>
-          <option value="airplane">{t('airplane')}</option>
-          <option value="seating-plan">{t('seating_plan')}</option>
+          <option value="wordsearch">{t('wordsearch')}</option>
         </select>
       </div>
       <div class="flex items-center justify-center">
-        <button type="submit" id="create-game-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button type="submit" id="create-game-btn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           {t('create_new_game')}
         </button>
       </div>
