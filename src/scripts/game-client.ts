@@ -2,7 +2,60 @@
 // Client-side logic for game page
 
 // Translation data
-const translations = {
+type TranslationKeys =
+  | "app_title"
+  | "create_new_game"
+  | "view_leaderboard"
+  | "add_questions"
+  | "edit_questions"
+  | "switch_template"
+  | "default_theme"
+  | "dark_theme"
+  | "colorful_theme"
+  | "time"
+  | "score"
+  | "reset"
+  | "check_answers"
+  | "add_to_leaderboard"
+  | "enter_your_name"
+  | "submit"
+  | "no_questions_found"
+  | "unsupported_game_template"
+  | "quiz_finished"
+  | "your_final_score"
+  | "play_again"
+  | "failed_to_load_game_data"
+  | "failed_to_load_questions"
+  | "loading_game"
+  | "timer_label"
+  | "score_label"
+  | "all_answers_correct"
+  | "you_got_correct"
+  | "correct"
+  | "incorrect"
+  | "next_question"
+  | "share"
+  | "share_game"
+  | "copy_url"
+  | "url_copied"
+  | "error_copying_url"
+  | "error_generating_qr"
+  | "qr_library_not_loaded"
+  | "error_submitting_score"
+  | "enter_new_template"
+  | "error_switching_template"
+  | "question"
+  | "answer"
+  | "answers"
+  | "true"
+  | "false"
+  | "submit_answer";
+
+type Translations = {
+  [lang: string]: { [key in TranslationKeys]?: string };
+};
+
+const translations: Translations = {
   en: {
     "app_title": "Wordwall Match Up",
     "create_new_game": "Create New Game",
@@ -28,8 +81,6 @@ const translations = {
     "failed_to_load_game_data": "Failed to load game data.",
     "failed_to_load_questions": "Failed to load questions.",
     "loading_game": "Loading game...",
-    "no_questions_found": "No questions found.",
-    "unsupported_game_template": "Unsupported game template.",
     "timer_label": "Game timer",
     "score_label": "Game score",
     "all_answers_correct": "All answers are correct!",
@@ -73,8 +124,12 @@ const translations = {
     "failed_to_load_game_data": "فشل تحميل بيانات اللعبة.",
     "failed_to_load_questions": "فشل تحميل الأسئلة.",
     "loading_game": "جاري تحميل اللعبة...",
-    "no_questions_found": "لم يتم العثور على أسئلة.",
-    "unsupported_game_template": "قالب اللعبة غير مدعوم.",
+    "question": "سؤال",
+    "answer": "الإجابة",
+    "answers": "الإجابات",
+    "true": "صحيح",
+    "false": "خطأ",
+    "submit_answer": "إرسال الإجابة",
     "timer_label": "مؤقت اللعبة",
     "score_label": "نتيجة اللعبة",
     "all_answers_correct": "كل الإجابات صحيحة!",
@@ -95,21 +150,23 @@ const translations = {
   }
 };
 
-function getLanguage() {
+
+function getLanguage(): string {
   const storedLang = localStorage.getItem('lang');
   return storedLang || 'en';
 }
 
-function t(key, ...args) {
+
+function t(key: TranslationKeys, ...args: any[]): string {
   const lang = getLanguage();
-  let translation = (translations[lang] && translations[lang][key]) || translations.en[key] || key;
+  let translation = (translations[lang]?.[key] ?? translations.en[key] ?? key) as string;
   args.forEach((arg, index) => {
     translation = translation.replace(`{${index}}`, String(arg));
   });
   return translation;
 }
 
-function showNotification({ message, type = 'info', duration = 3000 }) {
+function showNotification({ message, type = 'info', duration = 3000 }: { message: string; type?: 'info' | 'success' | 'error'; duration?: number }) {
   let container = document.getElementById('notification-container');
   if (!container) {
     container = document.createElement('div');
