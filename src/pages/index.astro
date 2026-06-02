@@ -4,15 +4,17 @@ import { t } from '../utils/i18n';
 ---
 
 <Layout title={t('app_title')}>
-  <div class="text-center">
-    <h1 class="text-4xl font-bold mb-8">{t('app_title')}</h1>
-    <div class="space-x-4">
-      <a href="/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  <section class="panel hero">
+    <h1 class="hero-title">{t('app_title')}</h1>
+    <p class="hero-subtitle">{t('home_subtitle')}</p>
+    <p class="hero-subtitle">{t('home_description')}</p>
+    <div class="hero-actions">
+      <a href="/create" class="btn-primary cta-link">
         {t('create_new_game')}
       </a>
-      <a href="/leaderboard" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+      <a href="/leaderboard" class="btn-secondary cta-link">
         {t('view_leaderboard')}
       </a>
     </div>
-  </div>
+  </section>
 </Layout>

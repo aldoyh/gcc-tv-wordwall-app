@@ -1,7 +1,10 @@
 {
   "app_title": "ووردوول ماتش أب",
+  "language": "اللغة",
   "create_new_game": "إنشاء لعبة جديدة",
   "view_leaderboard": "عرض لوحة الصدارة",
+  "home_subtitle": "أنشئ ألعابًا تعليمية تفاعلية خلال دقائق.",
+  "home_description": "أنشئ اللعبة، أضف الأسئلة، بدّل القالب، وتابع النتائج من لوحة واحدة سهلة.",
   "add_questions": "إضافة أسئلة",
   "edit_questions": "تعديل الأسئلة",
   "switch_template": "تبديل القالب",
@@ -31,6 +34,7 @@
   "no_questions_for_game": "لم يتم العثور على أسئلة لهذه اللعبة.",
   "failed_to_load_questions": "فشل تحميل الأسئلة.",
   "deleting": "جاري الحذف...",
+  "delete": "حذف",
   "error_deleting_question": "خطأ في حذف السؤال",
   "network_error_delete_question": "خطأ في الشبكة. تعذر حذف السؤال.",
   "question_deleted_successfully": "تم حذف السؤال بنجاح!",

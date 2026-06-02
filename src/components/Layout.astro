@@ -18,24 +18,26 @@ const currentLang = getLanguage();
     <title>{title}</title>
     <link rel="stylesheet" href="/src/styles/globals.css">
   </head>
-  <body>
-    <nav class="flex justify-between items-center p-4 bg-gray-100 shadow-md">
-      <div class="flex gap-4">
-        <a href="/" class="text-blue-600 hover:text-blue-800 font-semibold">{t('app_title')}</a>
-        <a href="/leaderboard" class="text-blue-600 hover:text-blue-800 font-semibold">{t('leaderboard')}</a>
-        <a href="/create" class="text-blue-600 hover:text-blue-800 font-semibold">{t('create_new_game')}</a>
+  <body class="app-shell">
+    <nav class="top-nav">
+      <div class="top-nav-links">
+        <a href="/" class="top-nav-link">{t('app_title')}</a>
+        <a href="/leaderboard" class="top-nav-link">{t('leaderboard')}</a>
+        <a href="/create" class="top-nav-link">{t('create_new_game')}</a>
       </div>
       <div class="language-switcher">
-        <select id="language-select" class="p-2 rounded-md border border-gray-300">
+        <select id="language-select" class="language-select" aria-label={t('language')}>
           <option value="en">English</option>
           <option value="ar">العربية</option>
         </select>
       </div>
     </nav>
-    <main>
+    <main class="page-content">
       <slot />
     </main>
     <Notification />
-    <script type="module" src="../scripts/language-switcher.ts"></script>
+    <script>
+      import '../scripts/language-switcher.ts';
+    </script>
   </body>
 </html>

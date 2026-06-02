@@ -83,7 +83,7 @@ const gameId = Astro.url.searchParams.get('game_id');
                 <input type="number" name="correct_option_${question.id}" value="${question.correct_option}" class="w-20 text-center bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
               </td>
               <td class="py-3 px-6 text-center">
-                <button type="button" class="delete-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" data-question-id="${question.id}">${t('deleting')}</button>
+                <button type="button" class="delete-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" data-question-id="${question.id}">${t('delete')}</button>
               </td>
             `;
             questionsTableBody.appendChild(row);

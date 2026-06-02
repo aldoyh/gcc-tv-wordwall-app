@@ -1,7 +1,10 @@
 {
   "app_title": "Wordwall Match Up",
+  "language": "Language",
   "create_new_game": "Create New Game",
   "view_leaderboard": "View Leaderboard",
+  "home_subtitle": "Build engaging classroom-ready games in minutes.",
+  "home_description": "Create your game, add questions, switch templates, and track scores from one simple dashboard.",
   "add_questions": "Add Questions",
   "edit_questions": "Edit Questions",
   "switch_template": "Switch Template",
@@ -31,6 +34,7 @@
   "no_questions_for_game": "No questions found for this game.",
   "failed_to_load_questions": "Failed to load questions.",
   "deleting": "Deleting...",
+  "delete": "Delete",
   "error_deleting_question": "Error deleting question",
   "network_error_delete_question": "Network error. Could not delete question.",
   "question_deleted_successfully": "Question deleted successfully!",
