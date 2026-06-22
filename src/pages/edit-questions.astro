@@ -1,0 +1,174 @@
+---
+import Layout from '../components/Layout.astro';
+import { t } from '../utils/i18n';
+
+const gameId = Astro.url.searchParams.get('game_id');
+---
+
+<Layout title={t('edit_questions')}>
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">{t('edit_questions')}</h1>
+    <form id="edit-questions-form" class="bg-white p-8 rounded-lg shadow-md">
+      <input type="hidden" name="game_id" value={gameId}>
+      <table class="w-full table-auto mb-6">
+        <thead>
+          <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+            <th class="py-3 px-6 text-left">{t('question')}</th>
+            <th class="py-3 px-6 text-left">{t('options')}</th>
+            <th class="py-3 px-6 text-center">{t('correct_option')}</th>
+            <th class="py-3 px-6 text-center">{t('action')}</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-600 text-sm font-light" id="questions-table-body">
+          <!-- Questions will be loaded here by JavaScript -->
+          <tr><td colspan="4" class="text-center py-4">{t('loading_questions')}</td></tr>
+        </tbody>
+      </table>
+      <div class="flex items-center justify-between">
+        <button type="submit" id="save-changes-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          {t('save_changes')}
+        </button>
+        <a href={`/game?id=${gameId}`} class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+          {t('back_to_game')}
+        </a>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { showNotification } from '../utils/notifications';
+  import { t } from '../utils/i18n';
+
+  const form = document.getElementById('edit-questions-form') as HTMLFormElement;
+  const questionsTableBody = document.getElementById('questions-table-body');
+  const gameId = (document.querySelector('input[name="game_id"]') as HTMLInputElement)?.value;
+  const saveChangesBtn = document.getElementById('save-changes-btn') as HTMLButtonElement;
+
+  interface Question {
+    id: number;
+    text: string;
+    options: string[];
+    correct_option: number;
+  }
+
+  async function loadQuestions() {
+    if (!gameId) {
+      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">${t('no_game_id_provided')}</td></tr>`;
+      return;
+    }
+    try {
+      const response = await fetch(`/php-backend/api.php?action=get_questions&game_id=${gameId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const questions: Question[] = await response.json();
+
+      if (questionsTableBody) {
+        questionsTableBody.innerHTML = ''; // Clear existing content
+        if (questions.length === 0) {
+          questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4">${t('no_questions_for_game')}</td></tr>`;
+        } else {
+          questions.forEach((question: Question) => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-gray-200 hover:bg-gray-100';
+            row.innerHTML = `
+              <td class="py-3 px-6 text-left whitespace-nowrap">
+                <input type="text" name="question_${question.id}" value="${question.text}" class="w-full bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+              </td>
+              <td class="py-3 px-6 text-left">
+                <input type="text" name="options_${question.id}" value="${question.options.join(', ')}" class="w-full bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+              </td>
+              <td class="py-3 px-6 text-center">
+                <input type="number" name="correct_option_${question.id}" value="${question.correct_option}" class="w-20 text-center bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none" />
+              </td>
+              <td class="py-3 px-6 text-center">
+                <button type="button" class="delete-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" data-question-id="${question.id}">${t('deleting')}</button>
+              </td>
+            `;
+            questionsTableBody.appendChild(row);
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading questions:', error);
+      if (questionsTableBody) questionsTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">${t('failed_to_load_questions')}</td></tr>`;
+      showNotification({ message: t('failed_to_load_questions'), type: 'error' });
+    }
+  }
+
+  loadQuestions();
+
+  if (form) {
+    form.addEventListener('click', async (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target && target.classList.contains('delete-btn')) {
+        const questionId = target.dataset.questionId;
+        if (!questionId) return;
+
+        const originalButtonText = target.textContent;
+        target.textContent = t('deleting');
+        (target as HTMLButtonElement).disabled = true;
+
+        try {
+          const response = await fetch('/php-backend/api.php?action=delete_question', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ question_id: questionId }),
+          });
+
+          if (response.ok) {
+            target.closest('tr')?.remove();
+            showNotification({ message: t('question_deleted_successfully'), type: 'success' });
+          } else {
+            const errorText = await response.text();
+            showNotification({ message: `${t('error_deleting_question')}: ${errorText}`, type: 'error' });
+          }
+        } catch (error) {
+          console.error('Network error:', error);
+          showNotification({ message: t('network_error_delete_question'), type: 'error' });
+        } finally {
+          target.textContent = originalButtonText;
+          (target as HTMLButtonElement).disabled = false;
+        }
+      }
+    });
+
+    form.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      saveChangesBtn.disabled = true;
+      saveChangesBtn.textContent = t('saving');
+
+      const formData = new FormData(form);
+      const data: { [key: string]: FormDataEntryValue } = {};
+      for (const [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+
+      try {
+        const response = await fetch('/php-backend/api.php?action=update_questions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          showNotification({ message: t('questions_updated_successfully'), type: 'success' });
+        } else {
+          const errorText = await response.text();
+          showNotification({ message: `${t('error_updating_questions')}: ${errorText}`, type: 'error' });
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        showNotification({ message: t('network_error_update_questions'), type: 'error' });
+      } finally {
+        saveChangesBtn.disabled = false;
+        saveChangesBtn.textContent = t('save_changes');
+      }
+    });
+  }
+</script>

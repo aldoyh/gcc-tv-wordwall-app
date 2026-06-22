@@ -1,0 +1,79 @@
+---
+import Layout from '../components/Layout.astro';
+import { t } from '../utils/i18n';
+
+const gameId = Astro.url.searchParams.get('game_id');
+---
+
+<Layout title={t('add_questions')}>
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">{t('add_questions')}</h1>
+    <form id="add-question-form" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+      <input type="hidden" name="game_id" value={gameId}>
+      <div class="mb-4">
+        <label for="text" class="block text-gray-700 font-bold mb-2">{t('question')}:</label>
+        <input type="text" id="text" name="text" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-4">
+        <label for="options" class="block text-gray-700 font-bold mb-2">{t('options')} ({t('comma_separated')}):</label>
+        <input type="text" id="options" name="options" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-6">
+        <label for="correct_option" class="block text-gray-700 font-bold mb-2">{t('correct_option')} ({t('index')}):</label>
+        <input type="number" id="correct_option" name="correct_option" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="flex items-center justify-between">
+        <button type="submit" id="add-question-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          {t('add_question')}
+        </button>
+        <a href={`/game?id=${gameId}`} class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+          {t('back_to_game')}
+        </a>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { showNotification } from '../utils/notifications';
+  import { t } from '../utils/i18n';
+
+  const form = document.getElementById('add-question-form') as HTMLFormElement;
+  const addQuestionBtn = document.getElementById('add-question-btn') as HTMLButtonElement;
+
+  if (form) {
+    form.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      addQuestionBtn.disabled = true; // Disable button on submit
+      addQuestionBtn.textContent = t('adding');
+
+      const formData = new FormData(form);
+      const data: { [key: string]: FormDataEntryValue | string[] } = Object.fromEntries(formData.entries());
+      data.options = (data.options as string).split(',').map((option: string) => option.trim());
+
+      try {
+        const response = await fetch('/php-backend/api.php?action=add_question', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          form.reset();
+          showNotification({ message: t('question_added_successfully'), type: 'success' });
+        } else {
+          const errorText = await response.text();
+          showNotification({ message: `${t('error_adding_question')}: ${errorText}`, type: 'error' });
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        showNotification({ message: t('network_error_add_question'), type: 'error' });
+      } finally {
+        addQuestionBtn.disabled = false;
+        addQuestionBtn.textContent = t('add_question');
+      }
+    });
+  }
+</script>

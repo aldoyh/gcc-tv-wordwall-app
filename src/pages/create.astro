@@ -1,0 +1,80 @@
+---
+import Layout from '../components/Layout.astro';
+import { t } from '../utils/i18n';
+---
+
+<Layout title={t('create_new_game')}>
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">{t('create_a_new_game')}</h1>
+    <form id="create-game-form" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+      <div class="mb-4">
+        <label for="title" class="block text-gray-700 font-bold mb-2">{t('title')}:</label>
+        <input type="text" id="title" name="title" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-4">
+        <label for="description" class="block text-gray-700 font-bold mb-2">{t('description')}:</label>
+        <textarea id="description" name="description" required rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+      </div>
+      <div class="mb-6">
+        <label for="template" class="block text-gray-700 font-bold mb-2">{t('template')}:</label>
+        <select id="template" name="template" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option value="match-up">{t('match_up')}</option>
+          <option value="quiz">{t('quiz')}</option>
+          <option value="crossword">{t('crossword')}</option>
+          <option value="maze-chase">{t('maze_chase')}</option>
+          <option value="airplane">{t('airplane')}</option>
+          <option value="seating-plan">{t('seating_plan')}</option>
+        </select>
+      </div>
+      <div class="flex items-center justify-center">
+        <button type="submit" id="create-game-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          {t('create_new_game')}
+        </button>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { showNotification } from '../utils/notifications';
+  import { t } from '../utils/i18n';
+
+  const form = document.getElementById('create-game-form') as HTMLFormElement;
+  const createGameBtn = document.getElementById('create-game-btn') as HTMLButtonElement;
+
+  if (form) {
+    form.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      createGameBtn.disabled = true; // Disable button on submit
+      createGameBtn.textContent = t('creating');
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('/php-backend/api.php?action=create_game', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          showNotification({ message: t('game_created_successfully'), type: 'success' });
+          window.location.href = `/game?id=${result.game_id}`;
+        } else {
+          const errorText = await response.text();
+          showNotification({ message: `${t('error_creating_game')}: ${errorText}`, type: 'error' });
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        showNotification({ message: t('network_error_create_game'), type: 'error' });
+      } finally {
+        createGameBtn.disabled = false;
+        createGameBtn.textContent = t('create_new_game');
+      }
+    });
+  }
+</script>
